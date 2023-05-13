@@ -43,7 +43,7 @@ The web app was developed following the Agile methodology, utilizing the project
 
 ### Database Models
 
-These are the models created for this project: User, Profile, Appointment
+These are the models created for this project: User, Profile, Appointment, Service
 
 - User:
 The User model is provided by Django Allauth package.
@@ -53,12 +53,13 @@ The following Models are custom:
 - Profile:
 This custom model is linked to the User model. It is used to store the user profile information.
 
-![UserProfile Model]()
-
 - Appointment:
 It is a model that stores the appointment information. It is linked to the User model, so that each user can access his/her appointments information.
 
-![Appointment Model]()
+- Service:
+To easily manage the services that can be booked, the staff memebers can create and manage them via the service model.
+
+![Model relationship diagram](media/models_relationships_diagram.png)
 
 [Back to the top](#table-of-content)
 
