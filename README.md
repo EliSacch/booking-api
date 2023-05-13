@@ -31,7 +31,7 @@ Django rest API for a booking system
 ## Design and User Experience
 
 The web app was developed following the Agile methodology, utilizing the project functionality provided by GitHub
-[Link to the project board]()
+[Link to the project board](https://github.com/users/EliSacch/projects/6/)
 
 ### Design
 
