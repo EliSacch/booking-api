@@ -151,6 +151,8 @@ Other libraries:
 Python libraries:
 
 Django libraries, frameworks and applications:
+  - Django-cloudinary-storage - To connect our Django project to Cloudinary
+  - Pillow - To add image processing capabilities to our project
 
 Database and storage:
   - PostgreSQL - Relational database system
