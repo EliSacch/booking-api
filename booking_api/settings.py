@@ -63,6 +63,7 @@ INSTALLED_APPS = [
 
     # custom apps
     'profiles',
+    'appointments',
 ]
 
 MIDDLEWARE = [
