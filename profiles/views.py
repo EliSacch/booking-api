@@ -1,24 +1,35 @@
 from rest_framework import generics
 
 from .models import Profile
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, ClientSerializer
 
-from booking_api.permissions import IsOwnerOrReadOnly
+from booking_api.permissions import IsOwnerOrReadOnly, IsOwner, IsStaffMember
 
 
 class ProfileList(generics.ListAPIView):
-    """
-    List all profiles.
+    """ List all profiles.
     No create view as profile creation is handled by django signals.
-    """
+    The profiles list can be acceed by the staff members only,
+    This is why it uses the ClientSerializer """
+    permission_classes = [IsStaffMember]
     queryset = Profile.objects.order_by('-created_at')
-    serializer_class = ProfileSerializer
+    serializer_class = ClientSerializer
 
 
 class ProfileDetail(generics.RetrieveUpdateAPIView):
-    """
-    Retrieve or update a profile if you're the owner.
-    """
-    permission_classes = [IsOwnerOrReadOnly]
+    """ Retrieve or update a profile if you're the owner.
+    This is the client facing profile detail view 
+    this is why it uses the Profile Serializer """
+    permission_classes = [IsOwner]
     queryset = Profile.objects.order_by('-created_at')
     serializer_class = ProfileSerializer
+
+
+class ClientProfileDetail(generics.RetrieveUpdateAPIView):
+    """ Retrieve or update a client profile profile
+    if you're a staff member.
+    This is the staff facing profile detail view 
+    this is why it uses the Client Serializer """
+    permission_classes = [IsStaffMember]
+    queryset = Profile.objects.order_by('-created_at')
+    serializer_class = ClientSerializer
