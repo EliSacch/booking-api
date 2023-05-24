@@ -19,8 +19,17 @@ class MyAppointmentList(generics.ListCreateAPIView):
     """ List all appointments or create one for the logged in user.
     The appointment list can be accessed by the owners only """
     permission_classes = [IsOwner]
-    queryset = Appointment.objects.filter(owner=1).order_by('-created_at')
+    queryset = Appointment.objects.order_by('-created_at')
     serializer_class = AppointmentSerializer
+
+    def filter_queryset(self, queryset):
+        queryset = queryset.filter(owner=self.request.user)
+        return super().filter_queryset(queryset)
+
+    """ When the user creates an appointment as client,
+    the requesting user is set as owner """
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):

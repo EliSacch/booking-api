@@ -7,7 +7,7 @@ class Appointment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     date = models.DateTimeField(unique=True)
-    notes = models.TextField
+    notes = models.TextField(blank=True, null=True)
 
     class Meta:
         ordering = ['-created_at']
