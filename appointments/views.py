@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 
 from .models import Appointment
-from .serializers import AppointmentSerializer
+from .serializers import AppointmentSerializer, ClientAppointmentSerializer
 
 from booking_api.permissions import IsOwner, IsStaffMember, IsStaffMemberOrOwner
 
@@ -12,7 +12,7 @@ class AllAppointmentList(generics.ListCreateAPIView):
      while each client can see only their own appointments """
     permission_classes = [ permissions.IsAuthenticated, IsStaffMember]
     queryset = Appointment.objects.order_by('-created_at')
-    serializer_class = AppointmentSerializer
+    serializer_class = ClientAppointmentSerializer
 
 
 class MyAppointmentList(generics.ListCreateAPIView):
@@ -33,8 +33,19 @@ class MyAppointmentList(generics.ListCreateAPIView):
 
 
 class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
-    """ Retrieve or update an appointment if the owner
-    or a staff member """
-    permission_classes = [ permissions.IsAuthenticated, IsStaffMemberOrOwner]
+    """ Retrieve or update an appointment if the owner.
+    This view uses The appointment serializer, because
+    clients cannot change the owner and/or client name """
+    permission_classes = [ permissions.IsAuthenticated, IsOwner]
     queryset = Appointment.objects.order_by('-created_at')
     serializer_class = AppointmentSerializer
+
+
+class ClientAppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    """ Retrieve or update an appointment if a staff member.
+    This views uses the ClientAppointmentSerializer because
+    it is the one used by staff members, which can select the user
+    and/or client name """
+    permission_classes = [ permissions.IsAuthenticated, IsStaffMember]
+    queryset = Appointment.objects.order_by('-created_at')
+    serializer_class = ClientAppointmentSerializer
