@@ -6,6 +6,17 @@ from django.utils import timezone
 import math
 
 
+""" This function is used in all views to calculate the slots
+reserved for a specific appointment, from the selected time """
+def calculate_slots(start, duration):
+    duration_range = int(duration / 50)
+    start_time = start
+    slots = []
+
+    for slot in range(0,duration_range):
+        slots += [start_time + (slot*50)]
+    return slots
+
 class AppointmentSerializer(serializers.ModelSerializer):
     """ Serializer for the appointment model. 
     All information are accessible to both client and staff members.
@@ -18,6 +29,15 @@ class AppointmentSerializer(serializers.ModelSerializer):
         # Clients can book appointments for the following day or after.
         if data['date'] <= timezone.now().date():
             raise serializers.ValidationError("This date is not available.")
+        
+        # Then we check if the slot is already occupied
+        # The duration for the moment is 1h30 minutes for all appointments
+        # but then it will get the duration based on the service
+        duration = 150
+        start_time = data['time']
+        slots = calculate_slots(start_time, duration)
+        if Appointment.objects.filter(date=data["date"]).filter(slots__overlap=slots).exists():
+                raise serializers.ValidationError(f"This slot is not available.{slots}")
         
         return data
 
@@ -68,8 +88,14 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
                 minutes = "00" if (first_available % 100) < 50 else "30"
                 raise serializers.ValidationError(f"Sorry, it is not possible to book appointments before {hour}:{minutes} today")
         
-        #if Appointment.objects.filter(date=data["date"]).exists():
-        #        raise serializers.ValidationError(f"This slot is not available.")
+        # Then we check if the slot is already occupied
+        # The duration for the moment is 1h30 minutes for all appointments
+        # but then it will get the duration based on the service
+        duration = 150
+        start_time = data['time']
+        slots = calculate_slots(start_time, duration)
+        if Appointment.objects.filter(date=data["date"]).filter(slots__overlap=slots).exists():
+                raise serializers.ValidationError(f"This slot is not available.{slots}")
         
         return data
 
