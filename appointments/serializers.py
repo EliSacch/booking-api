@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from .models import Appointment
 from django.utils import timezone
 
@@ -16,6 +17,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
         # Clients can book appointments for the following day or after.
         if data['date'] <= timezone.now().date():
             raise serializers.ValidationError("This date is not available.")
+        
+        return data
 
     class Meta:
         model = Appointment
@@ -23,12 +26,19 @@ class AppointmentSerializer(serializers.ModelSerializer):
             'id', 'owner', 'created_at', 'updated_at',
             'date', 'time', 'notes',
         ]
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Appointment.objects.all(),
+                fields=['date', 'time']
+            )
+        ]
 
 
 class ClientAppointmentSerializer(serializers.ModelSerializer):
     """ Serializer for the appointment model. 
     All information are accessible to both client and staff members.
-    Staff members can select an existing user as owner """
+    Staff members can select an existing user as owner
+    or make appointments for unregistered users """
 
     def validate(self, data):
         # Check if owner is null, in that case we make name mandatory.
@@ -54,15 +64,22 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
             if selected_slot < first_available:
                 hour = math.floor(first_available / 100)
                 minutes = "00" if (first_available % 100) < 50 else "30"
-                raise serializers.ValidationError(f"The first available spot for today is at {hour}:{minutes}")
+                raise serializers.ValidationError(f"Sorry, it is not possible to book appointments before {hour}:{minutes} today")
+        
+        if Appointment.objects.filter(date=data["date"]).exists():
+                raise serializers.ValidationError(f"This slot is not available.")
         
         return data
-    
-        
 
     class Meta:
         model = Appointment
         fields = [
             'id', 'owner', 'client_name', 'created_at', 'updated_at',
             'date', 'time', 'notes',
+        ]
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Appointment.objects.all(),
+                fields=['date', 'time']
+            )
         ]

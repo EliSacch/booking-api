@@ -130,8 +130,12 @@ _____________
 
 ### Code
 
+- The code to create array fields is taken from [ZEROTOBYTE](https://zerotobyte.com/django-arrayfield-working-with-arrays/#:~:text=What%20is%20ArrayField%20in%20Django,ForeignKey%2C%20OneToOneField%2C%20and%20ManyToManyField)
+
 - The code to ####### is taken from [Link]()
-- 
+
+- The code to ####### is taken from [Link]()
+
 ### Content
 
 - The models relationship diagram was drawn using [Lucidchart](https://www.lucidchart.com/pages/)

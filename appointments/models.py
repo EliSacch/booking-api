@@ -29,6 +29,8 @@ class Appointment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     date = models.DateField()
     time = models.IntegerField(choices=Slot.choices, default=Slot.NINE)
+    # The code to create Array field is from ZEROTOBYTE - link in readme
+    # End of Code from ZEROTOBYTE
     notes = models.TextField(blank=True, null=True)
 
     class Meta:

@@ -14,6 +14,22 @@ class AllAppointmentList(generics.ListCreateAPIView):
     queryset = Appointment.objects.order_by('-created_at')
     serializer_class = ClientAppointmentSerializer
 
+    """ When the user creates an appointment, the reserved slots
+     are automatically calculated 
+    def perform_create(self, serializer):
+        # For the moment we set 1h30 duration for each appointment,
+        # but then we will change it based on the service
+        duration = 150
+        duration_range = int(duration / 50)
+        start_time = self.request.time
+        slots = []
+
+        for slot in range(0,duration_range):
+            slots += [start_time + (slot*50)]
+
+        serializer.save(slots=slots)
+        """
+
 
 class MyAppointmentList(generics.ListCreateAPIView):
     """ List all appointments or create one for the logged in user.
@@ -26,9 +42,21 @@ class MyAppointmentList(generics.ListCreateAPIView):
         queryset = queryset.filter(owner=self.request.user)
         return super().filter_queryset(queryset)
 
-    """ When the user creates an appointment as client,
-    the requesting user is set as owner """
+    """ When the user creates an appointment, the reserved slots
+     are automatically calculated """
     def perform_create(self, serializer):
+        # For the moment we set 1h30 duration for each appointment,
+        # but then we will change it based on the service
+        """duration = 150
+        duration_range = int(duration / 50)
+        start_time = self.request.time
+        slots = []
+
+        for slot in range(0,duration_range):
+            slots += [start_time + (slot*50)]"""
+
+        """ When the user creates an appointment as client,
+        the requesting user is set as owner """
         serializer.save(owner=self.request.user)
 
 
