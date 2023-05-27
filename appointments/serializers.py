@@ -12,6 +12,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
     Clients cannot select the owner, which will be set to 
     the logged in user automatically """
     owner = serializers.ReadOnlyField(source='owner.username')
+    slots = serializers.ReadOnlyField()
 
     def validate(self, data):
         # Clients can book appointments for the following day or after.
@@ -24,7 +25,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
         model = Appointment
         fields = [
             'id', 'owner', 'created_at', 'updated_at',
-            'date', 'time', 'notes',
+            'date', 'time', 'slots', 'notes',
         ]
         validators = [
             UniqueTogetherValidator(
@@ -39,6 +40,7 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
     All information are accessible to both client and staff members.
     Staff members can select an existing user as owner
     or make appointments for unregistered users """
+    slots = serializers.ReadOnlyField()
 
     def validate(self, data):
         # Check if owner is null, in that case we make name mandatory.
@@ -66,8 +68,8 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
                 minutes = "00" if (first_available % 100) < 50 else "30"
                 raise serializers.ValidationError(f"Sorry, it is not possible to book appointments before {hour}:{minutes} today")
         
-        if Appointment.objects.filter(date=data["date"]).exists():
-                raise serializers.ValidationError(f"This slot is not available.")
+        #if Appointment.objects.filter(date=data["date"]).exists():
+        #        raise serializers.ValidationError(f"This slot is not available.")
         
         return data
 
@@ -75,7 +77,7 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
         model = Appointment
         fields = [
             'id', 'owner', 'client_name', 'created_at', 'updated_at',
-            'date', 'time', 'notes',
+            'date', 'time', 'slots', 'notes',
         ]
         validators = [
             UniqueTogetherValidator(

@@ -30,6 +30,7 @@ class Appointment(models.Model):
     date = models.DateField()
     time = models.IntegerField(choices=Slot.choices, default=Slot.NINE)
     # The code to create Array field is from ZEROTOBYTE - link in readme
+    slots = ArrayField(models.IntegerField(), blank=True, null=True)
     # End of Code from ZEROTOBYTE
     notes = models.TextField(blank=True, null=True)
 

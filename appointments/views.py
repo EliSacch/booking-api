@@ -6,6 +6,18 @@ from .serializers import AppointmentSerializer, ClientAppointmentSerializer
 from booking_api.permissions import IsOwner, IsStaffMember, IsStaffMemberOrOwner
 
 
+""" This function is used in all views to calculate the slots
+reserved for a specific appointment, from the selected time """
+def calculate_slots(start, duration):
+    duration_range = int(duration / 50)
+    start_time = start
+    slots = []
+
+    for slot in range(0,duration_range):
+        slots += [start_time + (slot*50)]
+    return slots
+
+
 class AllAppointmentList(generics.ListCreateAPIView):
     """ List all appointments, or create a new one.
     The appointment list can be accessed by the staff members only,
@@ -15,20 +27,14 @@ class AllAppointmentList(generics.ListCreateAPIView):
     serializer_class = ClientAppointmentSerializer
 
     """ When the user creates an appointment, the reserved slots
-     are automatically calculated 
+     are automatically calculated """
     def perform_create(self, serializer):
         # For the moment we set 1h30 duration for each appointment,
         # but then we will change it based on the service
         duration = 150
-        duration_range = int(duration / 50)
-        start_time = self.request.time
-        slots = []
-
-        for slot in range(0,duration_range):
-            slots += [start_time + (slot*50)]
-
+        start_time = int(self.request.POST['time'])
+        slots = calculate_slots(start_time, duration)
         serializer.save(slots=slots)
-        """
 
 
 class MyAppointmentList(generics.ListCreateAPIView):
@@ -47,17 +53,13 @@ class MyAppointmentList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # For the moment we set 1h30 duration for each appointment,
         # but then we will change it based on the service
-        """duration = 150
-        duration_range = int(duration / 50)
-        start_time = self.request.time
-        slots = []
-
-        for slot in range(0,duration_range):
-            slots += [start_time + (slot*50)]"""
+        duration = 150
+        start_time = int(self.request.POST['time'])
+        slots = calculate_slots(start_time, duration)
 
         """ When the user creates an appointment as client,
         the requesting user is set as owner """
-        serializer.save(owner=self.request.user)
+        serializer.save(owner=self.request.user, slots=slots)
 
 
 class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -68,6 +70,13 @@ class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Appointment.objects.order_by('-created_at')
     serializer_class = AppointmentSerializer
 
+    def perform_update(self, serializer):
+        duration = 150
+        start_time = int(self.request.POST['time'])
+        slots = calculate_slots(start_time, duration)
+        
+        serializer.save(slots=slots)
+
 
 class ClientAppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
     """ Retrieve or update an appointment if a staff member.
@@ -77,3 +86,10 @@ class ClientAppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [ permissions.IsAuthenticated, IsStaffMember]
     queryset = Appointment.objects.order_by('-created_at')
     serializer_class = ClientAppointmentSerializer
+
+    def perform_update(self, serializer):
+        duration = 150
+        start_time = int(self.request.POST['time'])
+        slots = calculate_slots(start_time, duration)
+        
+        serializer.save(slots=slots)
