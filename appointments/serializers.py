@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from .models import Appointment
+
+from datetime import date
 from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 
 import math
 
@@ -29,6 +32,17 @@ class AppointmentSerializer(serializers.ModelSerializer):
         # Clients can book appointments for the following day or after.
         if data['date'] <= timezone.now().date():
             raise serializers.ValidationError("This date is not available.")
+        
+        # Check that appointment date is not in more than 6 months in the future
+        #The following code is from stackoverflow - link in README
+        six_months = date.today() + relativedelta(months=+6)
+        # end of code from stackoverflow
+        if data['date'] > six_months:
+            raise serializers.ValidationError(f"We are currently taking appointments until {six_months}")
+        
+        # Check the weekday and block appointments for Sundays and Mondays
+        if data['date'].weekday() == 6 or data['date'].weekday() == 0:
+             raise serializers.ValidationError("Sorry, we are closed! We are open Tuesday to Saturday.")
         
         # Then we check if the slot is already occupied
         # The duration for the moment is 1h30 minutes for all appointments
@@ -71,6 +85,13 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
         if data['date'] < timezone.now().date():
             raise serializers.ValidationError("Appointment cannot be in the past")
         
+        # Check that appointment date is not in more than 6 months in the future
+        #The following code is from stackoverflow - link in README
+        six_months = date.today() + relativedelta(months=+6)
+        # end of code from stackoverflow
+        if data['date'] > six_months:
+            raise serializers.ValidationError(f"We are currently taking appointments until {six_months}")
+        
         # Check the weekday and block appointments for Sundays and Mondays
         if data['date'].weekday() == 6 or data['date'].weekday() == 0:
              raise serializers.ValidationError("Sorry, we are closed! We are open Tuesday to Saturday.")
@@ -90,7 +111,9 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
             if selected_slot < first_available:
                 hour = math.floor(first_available / 100)
                 minutes = "00" if (first_available % 100) < 50 else "30"
-                raise serializers.ValidationError(f"Sorry, it is not possible to book appointments before {hour}:{minutes} today")
+                raise serializers.ValidationError(
+                     f"Sorry, it is not possible to book appointments before {hour}:{minutes} today"
+                     )
         
         # Then we check if the slot is already occupied
         # The duration for the moment is 1h30 minutes for all appointments
