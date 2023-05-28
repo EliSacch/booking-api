@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     # custom apps
     'profiles',
     'appointments',
+    'services',
 ]
 
 MIDDLEWARE = [
