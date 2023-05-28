@@ -37,7 +37,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
         start_time = data['time']
         slots = calculate_slots(start_time, duration)
         if Appointment.objects.filter(date=data["date"]).filter(slots__overlap=slots).exists():
-                raise serializers.ValidationError(f"This slot is not available.{slots}")
+                raise serializers.ValidationError(f"This slot is not available.")
         
         return data
 
@@ -71,6 +71,10 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
         if data['date'] < timezone.now().date():
             raise serializers.ValidationError("Appointment cannot be in the past")
         
+        # Check the weekday and block appointments for Sundays and Mondays
+        if data['date'].weekday() == 6 or data['date'].weekday() == 0:
+             raise serializers.ValidationError("Sorry, we are closed! We are open Tuesday to Saturday.")
+        
         # If appointment is for today, check that time slot is not in the past
         if data['date'] == timezone.now().date():
             # This is the current hour rounded down
@@ -95,7 +99,7 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
         start_time = data['time']
         slots = calculate_slots(start_time, duration)
         if Appointment.objects.filter(date=data["date"]).filter(slots__overlap=slots).exists():
-                raise serializers.ValidationError(f"This slot is not available.{slots}")
+                raise serializers.ValidationError(f"This slot is not available.")
         
         return data
 
