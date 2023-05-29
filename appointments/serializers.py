@@ -48,8 +48,18 @@ class AppointmentSerializer(serializers.ModelSerializer):
         duration = data['service'].duration
         start_time = data['time']
         slots = calculate_slots(start_time, duration)
-        if Appointment.objects.filter(date=data["date"]).filter(slots__overlap=slots).exists():
-                raise serializers.ValidationError(f"This slot is not available.")
+
+        # Retrieve all appointments for the same date, and with overlapping slots
+        overlapping_appointment = Appointment.objects.filter(
+            date=data["date"]).filter(slots__overlap=slots)
+
+        # For PUT method, we also check that the overlapping appointment is not the one being edited
+        if self.instance:
+            current_appointment = self.instance.id
+            overlapping_appointment = overlapping_appointment.exclude(pk=current_appointment)
+
+        if overlapping_appointment.exists():
+            raise serializers.ValidationError(f"This slot is not available.")
         
         return data
 
@@ -127,8 +137,17 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
         duration = data['service'].duration
         start_time = data['time']
         slots = calculate_slots(start_time, duration)
-        if Appointment.objects.filter(date=data["date"]).filter(slots__overlap=slots).exists():
-                raise serializers.ValidationError(f"This slot is not available.")
+
+        # Retrieve all appointments for the same date, and with overlapping slots
+        overlapping_appointment = Appointment.objects.filter(
+            date=data["date"]).filter(slots__overlap=slots)
+        # For PUT method, we also check that the overlapping appointment is not the one being edited
+        if self.instance:
+            current_appointment = self.instance.id
+            overlapping_appointment = overlapping_appointment.exclude(pk=current_appointment)
+
+        if overlapping_appointment.exists():
+            raise serializers.ValidationError(f"This slot is not available.")
         
         return data
 
