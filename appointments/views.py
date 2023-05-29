@@ -59,7 +59,7 @@ class MyAppointmentList(generics.ListCreateAPIView):
 
         """ When the user creates an appointment as client,
         the requesting user is set as owner """
-        serializer.save(owner=self.request.user, slots=slots)
+        serializer.save(owner=self.request.user, client_name=self.request.user.username, slots=slots)
 
 
 class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):

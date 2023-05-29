@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 
 from .models import Service
-from .serializers import ServiceSerializer
+from .serializers import ServiceSerializer, ClientFacingServiceSerializer
 
 from booking_api.permissions import IsStaffMember
 
@@ -18,8 +18,8 @@ class ClientFacingServiceList(generics.ListAPIView):
     """ List all services, accessible to clients.
     Clients can only review the available services, but they cannot edit them """
     permission_classes = [ permissions.IsAuthenticated ]
-    queryset = Service.objects.order_by('-created_at')
-    serializer_class = ServiceSerializer
+    queryset = Service.objects.filter(is_active=True).order_by('-created_at')
+    serializer_class = ClientFacingServiceSerializer
 
 
 class ServiceDetail(generics.RetrieveUpdateDestroyAPIView):

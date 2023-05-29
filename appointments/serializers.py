@@ -58,8 +58,9 @@ class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = [
-            'id', 'owner', 'created_at', 'updated_at',
+            'id', 'owner', 'service',
             'date', 'time', 'slots', 'notes',
+            'created_at', 'updated_at',
         ]
         validators = [
             UniqueTogetherValidator(
@@ -67,6 +68,15 @@ class AppointmentSerializer(serializers.ModelSerializer):
                 fields=['date', 'time']
             )
         ]
+    
+    # The following code is from Stackoverflow - link in README
+    def to_representation(self, instance):
+        rep = super(AppointmentSerializer, self).to_representation(instance)
+        rep['service'] = instance.service.title
+        if rep['owner']:
+            rep['owner'] = instance.owner.username
+        return rep
+    # End of code from
 
 
 class ClientAppointmentSerializer(serializers.ModelSerializer):
@@ -129,8 +139,9 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = [
-            'id', 'owner', 'client_name', 'created_at', 'updated_at',
+            'id', 'owner', 'client_name', 'service',
             'date', 'time', 'slots', 'notes',
+            'created_at', 'updated_at',
         ]
         validators = [
             UniqueTogetherValidator(
@@ -138,3 +149,12 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
                 fields=['date', 'time']
             )
         ]
+    
+    # The following code is from Stackoverflow - link in README
+    def to_representation(self, instance):
+        rep = super(ClientAppointmentSerializer, self).to_representation(instance)
+        rep['service'] = instance.service.title
+        if rep['owner']:
+            rep['owner'] = instance.owner.username
+        return rep
+    # End of code from stackoverflow

@@ -8,10 +8,7 @@ from dateutil.relativedelta import relativedelta
 import math
 
 
-class ServiceSerializer(serializers.ModelSerializer):
-    """ Serializer for the service model. 
-    All information are accessible to staff members only """
-    DURATION_CHOICES = [
+DURATION_CHOICES = [
         (50, '00:30'),
         (100, '01:00'),
         (150, '01:30'),
@@ -28,7 +25,54 @@ class ServiceSerializer(serializers.ModelSerializer):
         (700, '07:00'),
         (750, '07:30'),
     ]
+
+class ServiceSerializer(serializers.ModelSerializer):
+    """ Serializer for the service model. 
+    All information are accessible to staff members only """
+    
     duration = serializers.ChoiceField(choices=DURATION_CHOICES)
+
+    def validate_image(self, value):
+        if value.size > 2 * 1024 * 1024:
+            raise serializers.ValidationError('Image size larger than 2MB!')
+        if value.image.height > 4096:
+            raise serializers.ValidationError(
+                'Image height larger than 4096px!'
+            )
+        if value.image.width > 4096:
+            raise serializers.ValidationError(
+                'Image width larger than 4096px!'
+            )
+        return value
+
+
+    class Meta:
+        model = Service
+        fields = [
+            'id', 'title', 'description',
+            'price', 'duration', 'image',
+            'is_active', 'created_at', 'updated_at',
+        ]
+
+
+class ClientFacingServiceSerializer(serializers.ModelSerializer):
+    """ Serializer for the service model. 
+    The following information are accessible to clients """
+    
+    duration = serializers.ChoiceField(choices=DURATION_CHOICES)
+
+    def validate_image(self, value):
+        if value.size > 2 * 1024 * 1024:
+            raise serializers.ValidationError('Image size larger than 2MB!')
+        if value.image.height > 4096:
+            raise serializers.ValidationError(
+                'Image height larger than 4096px!'
+            )
+        if value.image.width > 4096:
+            raise serializers.ValidationError(
+                'Image width larger than 4096px!'
+            )
+        return value
 
 
     class Meta:

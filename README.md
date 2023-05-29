@@ -134,6 +134,8 @@ _____________
 
 - The code to get the date corresponding to six months from today is taken from [Stackoverflow](https://stackoverflow.com/questions/546321/how-do-i-calculate-the-date-six-months-from-the-current-date-using-the-datetime)
 
+- The code to dispaly a foreignkey field name/title instead of the id (in serializer) is taken from [Stackoverflow](https://stackoverflow.com/questions/52491330/how-to-get-foreignkey-field-name-instead-of-id-in-django-rest-framework)
+
 - The code to ####### is taken from [Link]()
 
 ### Content
