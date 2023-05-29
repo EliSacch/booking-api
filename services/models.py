@@ -10,6 +10,7 @@ class Service(models.Model):
     image = models.ImageField(
         upload_to='images/', default='../default-service_obfy3s'
     )
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
