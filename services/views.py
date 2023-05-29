@@ -3,7 +3,7 @@ from rest_framework import generics, permissions
 from .models import Service
 from .serializers import ServiceSerializer
 
-from booking_api.permissions import IsOwner, IsStaffMember, IsStaffMemberOrOwner
+from booking_api.permissions import IsStaffMember
 
 
 class ServiceList(generics.ListCreateAPIView):
