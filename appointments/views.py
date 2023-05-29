@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions
 
 from .models import Appointment
+from services.models import Service
 from .serializers import AppointmentSerializer, ClientAppointmentSerializer
 
 from booking_api.permissions import IsOwner, IsStaffMember, IsStaffMemberOrOwner
@@ -29,9 +30,9 @@ class AllAppointmentList(generics.ListCreateAPIView):
     """ When the user creates an appointment, the reserved slots
      are automatically calculated """
     def perform_create(self, serializer):
-        # For the moment we set 1h30 duration for each appointment,
-        # but then we will change it based on the service
-        duration = 150
+        # Get the specific service duration
+        service_id = int(self.request.POST['service'])
+        duration = Service.objects.filter(id=service_id).first().duration
         start_time = int(self.request.POST['time'])
         slots = calculate_slots(start_time, duration)
         serializer.save(slots=slots)
@@ -51,9 +52,9 @@ class MyAppointmentList(generics.ListCreateAPIView):
     """ When the user creates an appointment, the reserved slots
      are automatically calculated """
     def perform_create(self, serializer):
-        # For the moment we set 1h30 duration for each appointment,
-        # but then we will change it based on the service
-        duration = 150
+        # Get the specific service duration
+        service_id = int(self.request.POST['service'])
+        duration = Service.objects.filter(id=service_id).first().duration
         start_time = int(self.request.POST['time'])
         slots = calculate_slots(start_time, duration)
 
@@ -71,7 +72,9 @@ class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AppointmentSerializer
 
     def perform_update(self, serializer):
-        duration = 150
+        # Get the specific service duration
+        service_id = int(self.request.POST['service'])
+        duration = Service.objects.filter(id=service_id).first().duration
         start_time = int(self.request.POST['time'])
         slots = calculate_slots(start_time, duration)
         
@@ -88,7 +91,9 @@ class ClientAppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ClientAppointmentSerializer
 
     def perform_update(self, serializer):
-        duration = 150
+        # Get the specific service duration
+        service_id = int(self.request.POST['service'])
+        duration = Service.objects.filter(id=service_id).first().duration
         start_time = int(self.request.POST['time'])
         slots = calculate_slots(start_time, duration)
         

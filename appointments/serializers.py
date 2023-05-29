@@ -45,9 +45,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
              raise serializers.ValidationError("Sorry, we are closed! We are open Tuesday to Saturday.")
         
         # Then we check if the slot is already occupied
-        # The duration for the moment is 1h30 minutes for all appointments
-        # but then it will get the duration based on the service
-        duration = 150
+        duration = data['service'].duration
         start_time = data['time']
         slots = calculate_slots(start_time, duration)
         if Appointment.objects.filter(date=data["date"]).filter(slots__overlap=slots).exists():
@@ -126,9 +124,7 @@ class ClientAppointmentSerializer(serializers.ModelSerializer):
                      )
         
         # Then we check if the slot is already occupied
-        # The duration for the moment is 1h30 minutes for all appointments
-        # but then it will get the duration based on the service
-        duration = 150
+        duration = data['service'].duration
         start_time = data['time']
         slots = calculate_slots(start_time, duration)
         if Appointment.objects.filter(date=data["date"]).filter(slots__overlap=slots).exists():
