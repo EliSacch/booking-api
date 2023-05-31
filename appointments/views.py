@@ -1,8 +1,9 @@
 from rest_framework import generics, permissions
+from django.db.models import Q
 
 from .models import Appointment
 from services.models import Service
-from .serializers import AppointmentSerializer, ClientAppointmentSerializer
+from .serializers import StaffAppointmentSerializer, ClientAppointmentSerializer
 
 from booking_api.permissions import IsOwner, IsStaffMember, IsStaffMemberOrOwner
 
@@ -25,14 +26,14 @@ class AllAppointmentList(generics.ListCreateAPIView):
      while each client can see only their own appointments """
     permission_classes = [ permissions.IsAuthenticated, IsStaffMember]
     queryset = Appointment.objects.order_by('-created_at')
-    serializer_class = ClientAppointmentSerializer
+    serializer_class = StaffAppointmentSerializer
 
     """ When the user creates an appointment, the reserved slots
      are automatically calculated """
     def perform_create(self, serializer):
         # Get the specific service duration
-        service_id = int(self.request.POST['service'])
-        duration = Service.objects.filter(id=service_id).first().duration
+        service = self.request.POST['service']
+        duration = Service.objects.filter(title=service).first().duration
         start_time = int(self.request.POST['time'])
         slots = calculate_slots(start_time, duration)
         serializer.save(slots=slots)
@@ -43,7 +44,7 @@ class MyAppointmentList(generics.ListCreateAPIView):
     The appointment list can be accessed by the owners only """
     permission_classes = [ permissions.IsAuthenticated, IsOwner]
     queryset = Appointment.objects.order_by('-created_at')
-    serializer_class = AppointmentSerializer
+    serializer_class = ClientAppointmentSerializer
 
     def filter_queryset(self, queryset):
         queryset = queryset.filter(owner=self.request.user)
@@ -53,8 +54,8 @@ class MyAppointmentList(generics.ListCreateAPIView):
      are automatically calculated """
     def perform_create(self, serializer):
         # Get the specific service duration
-        service_id = int(self.request.POST['service'])
-        duration = Service.objects.filter(id=service_id).first().duration
+        service = self.request.POST['service']
+        duration = Service.objects.filter(title=service).first().duration
         start_time = int(self.request.POST['time'])
         slots = calculate_slots(start_time, duration)
 
@@ -69,12 +70,12 @@ class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
     clients cannot change the owner and/or client name """
     permission_classes = [ permissions.IsAuthenticated, IsOwner]
     queryset = Appointment.objects.order_by('-created_at')
-    serializer_class = AppointmentSerializer
+    serializer_class = ClientAppointmentSerializer
 
     def perform_update(self, serializer):
         # Get the specific service duration
-        service_id = int(self.request.POST['service'])
-        duration = Service.objects.filter(id=service_id).first().duration
+        service = self.request.POST['service']
+        duration = Service.objects.filter(title=service).first().duration
         start_time = int(self.request.POST['time'])
         slots = calculate_slots(start_time, duration)
         
@@ -88,12 +89,12 @@ class ClientAppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
     and/or client name """
     permission_classes = [ permissions.IsAuthenticated, IsStaffMember]
     queryset = Appointment.objects.order_by('-created_at')
-    serializer_class = ClientAppointmentSerializer
+    serializer_class = StaffAppointmentSerializer
 
     def perform_update(self, serializer):
         # Get the specific service duration
-        service_id = int(self.request.POST['service'])
-        duration = Service.objects.filter(id=service_id).first().duration
+        service = self.request.POST['service']
+        duration = Service.objects.filter(title=service).first().duration
         start_time = int(self.request.POST['time'])
         slots = calculate_slots(start_time, duration)
         
