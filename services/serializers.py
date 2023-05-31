@@ -1,12 +1,6 @@
 from rest_framework import serializers
 from .models import Service
 
-from datetime import date
-from django.utils import timezone
-from dateutil.relativedelta import relativedelta
-
-import math
-
 
 DURATION_CHOICES = [
         (50, '00:30'),
