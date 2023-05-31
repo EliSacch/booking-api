@@ -16,16 +16,10 @@ class PostListViewTests(APITestCase):
         Appointment.objects.create(owner=admin, service=service, date='2023-08-09', time=1300)
 
     def test_is_staff(self):
-        self.client.login(username='Admin', password='admin')
         admin = User.objects.get(username='Admin')
         self.assertEqual(admin.is_staff, True)
-        #response2 = self.client.get('/profiles/2')
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
-        #self.assertEqual(response2.status_code, status.HTTP_200_OK)
-        # admin = User.objects.get(username='Admin')
-        # self.assertEqual(Profile.objects.get(owner=admin).isStaff, True)
 
-    """def test_not_loggedin_user_cannot_list_appointments(self):
+    def test_not_loggedin_user_cannot_list_appointments(self):
         response = self.client.get('/my-appointments/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         print(response.data)
@@ -38,24 +32,25 @@ class PostListViewTests(APITestCase):
         print(response.data)
         print(len(response.data))
 
+    def test_logged_in_user_can_create_appointment(self):
+        self.client.login(username='Test', password='test')
+        client = User.objects.get(username='Test')
+        service = Service.objects.get(title='Color')
+        response = self.client.post('/my-appointments/', {'owner': client, 'service': service, 'date': '2023-08-09', 'time': 900})
+        count = Appointment.objects.count()
+        self.assertEqual(count, 2)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     def test_client_cannot_list_all_appointments(self):
         self.client.login(username='Test', password='test')
         response = self.client.get('/appointments/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         print(response.data)
-        print(len(response.data))"""
+        print(len(response.data))
 
-    """def test_staff_can_list_all_appointments(self):
+    def test_staff_can_list_all_appointments(self):
         self.client.login(username='Admin', password='admin')
         response = self.client.get('/appointments/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         print(response.data)
         print(len(response.data))
-
-    def test_logged_in_user_can_create_appointment(self):
-        self.client.login(username='Admin', password='admin')
-        service = Service.objects.get(title='Color')
-        response = self.client.post('/appointments/', {'owner': 'admin', 'service': service, 'date': '2023-08-09', 'time': 900})
-        count = Appointments.objects.count()
-        self.assertEqual(count, 1)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)"""
