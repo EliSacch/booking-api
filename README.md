@@ -136,6 +136,8 @@ _____________
 
 - The code to dispaly a foreignkey field name/title instead of the id (in serializer) is taken from [Stackoverflow](https://stackoverflow.com/questions/52491330/how-to-get-foreignkey-field-name-instead-of-id-in-django-rest-framework)
 
+- The code to display an error message for ProtectedError instad of the Django 500 error page is taken from [Stackoverflow](https://stackoverflow.com/questions/44229783/catch-protected-error-and-show-its-message-to-the-user-instead-of-bare-500-code)
+
 - The code to ####### is taken from [Link]()
 
 ### Content
