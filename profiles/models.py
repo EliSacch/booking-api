@@ -12,7 +12,6 @@ class Profile(models.Model):
     image = models.ImageField(
         upload_to='images/', default='../default_profile_dutbfy'
     )
-    isStaff = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at']

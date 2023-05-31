@@ -3,7 +3,7 @@ from rest_framework import generics, permissions
 from .models import Profile
 from .serializers import ProfileSerializer, ClientSerializer
 
-from booking_api.permissions import IsOwnerOrReadOnly, IsOwner, IsStaffMember
+from booking_api.permissions import IsOwner, IsStaffMember
 
 
 class ProfileList(generics.ListAPIView):
