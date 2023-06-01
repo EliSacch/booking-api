@@ -12,23 +12,12 @@ from dateutil.relativedelta import relativedelta
 import math
 
 
-""" This function is used in all views to calculate the slots
-reserved for a specific appointment, from the selected time """
-def calculate_slots(start, duration):
-    duration_range = int(duration / 50)
-    start_time = start
-    slots = []
-
-    for slot in range(0,duration_range):
-        slots += [start_time + (slot*50)]
-    return slots
-
-
 class BaseAppointmentSerializer(serializers.ModelSerializer):
     """ Base Serializer for the appointment model. 
     It will be user as blueprint for the two 
     client or staff facing serializers """
     service = serializers.ChoiceField(choices=Service.objects.filter(is_active=True))
+    end_time = serializers.ReadOnlyField()
 
     def validate(self, data):
         # Check that appointment date is not in the past.
@@ -46,22 +35,24 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         if data['date'].weekday() == 6 or data['date'].weekday() == 0:
              raise serializers.ValidationError("Sorry, we are closed! We are open Tuesday to Saturday.")
         
-        # Then we check if the slot is already occupied
+        # Find the time range (start_time - end_time) for the current instance
         duration = data['service'].duration
         start_time = data['time']
-        slots = calculate_slots(start_time, duration)
+        end_time = start_time+duration
 
-        # Retrieve all appointments for the same date, and with overlapping slots
-        overlapping_appointment = Appointment.objects.filter(
-            date=data["date"]).filter(slots__overlap=slots)
-
-        # For PUT method, we also check that the overlapping appointment is not the one being edited
+        # Retrieve all appointments for the same date
+        same_day_appointments = Appointment.objects.filter(date=data["date"])
+        # For PUT method, exclude the current instance from the queryset
         if self.instance:
             current_appointment = self.instance.id
-            overlapping_appointment = overlapping_appointment.exclude(pk=current_appointment)
+            same_day_appointments = same_day_appointments.exclude(pk=current_appointment)
 
-        if overlapping_appointment.exists():
-            raise serializers.ValidationError(f"This slot is not available.")
+        # For each appointment in the queryset, check that the instance appointment time range
+        # does not have overlapping time with another appoint range (start_time - end_time)
+        for appointment in same_day_appointments:
+            overlapping = range(max(start_time, appointment.time), min(end_time, appointment.end_time))
+            if len(overlapping) != 0:
+                raise serializers.ValidationError(f"This time is not available.")
         
         return data
 
@@ -90,8 +81,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
 
 
 class ClientAppointmentSerializer(BaseAppointmentSerializer):
-    """ Serializer for the appointment model. 
-    All information are accessible to both client and staff members.
+    """ Client facing serializer.. 
     Clients cannot select the owner, which will be set to 
     the logged in user automatically """
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -105,11 +95,9 @@ class ClientAppointmentSerializer(BaseAppointmentSerializer):
 
 
 class StaffAppointmentSerializer(BaseAppointmentSerializer):
-    """ Serializer for the appointment model. 
-    All information are accessible to both client and staff members.
+    """ Staff facing serializer.
     Staff members can select an existing user as owner
     or make appointments for unregistered users """
-    slots = serializers.ReadOnlyField()
 
     def validate(self, data):
         # Check if owner is null, in that case we make name mandatory.
@@ -141,6 +129,6 @@ class StaffAppointmentSerializer(BaseAppointmentSerializer):
         model = Appointment
         fields = [
             'id', 'owner', 'client_name', 'service',
-            'date', 'time', 'slots', 'notes',
+            'date', 'time', 'end_time', 'notes',
             'created_at', 'updated_at',
         ]

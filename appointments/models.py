@@ -33,6 +33,7 @@ class Appointment(models.Model):
     # The code to create Array field is from ZEROTOBYTE - link in readme
     slots = ArrayField(models.IntegerField(), blank=True, null=True)
     # End of Code from ZEROTOBYTE
+    end_time = models.IntegerField(default=1800)
     notes = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
