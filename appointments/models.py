@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.postgres.fields import ArrayField
 
 from services.models import Service
 
@@ -27,13 +26,10 @@ class Appointment(models.Model):
     
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     client_name = models.CharField(max_length=255, null=True, blank=True)
-    service = models.ForeignKey(Service, on_delete=models.PROTECT, default=1)
+    service = models.ForeignKey(Service, on_delete=models.PROTECT)
     date = models.DateField()
     time = models.IntegerField(choices=Slot.choices, default=Slot.NINE)
-    # The code to create Array field is from ZEROTOBYTE - link in readme
-    slots = ArrayField(models.IntegerField(), blank=True, null=True)
-    # End of Code from ZEROTOBYTE
-    end_time = models.IntegerField(default=1800)
+    end_time = models.IntegerField()
     notes = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

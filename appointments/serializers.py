@@ -50,7 +50,9 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         # For each appointment in the queryset, check that the instance appointment time range
         # does not have overlapping time with another appoint range (start_time - end_time)
         for appointment in same_day_appointments:
+            # The following code is from Stackoverflow - Link in README
             overlapping = range(max(start_time, appointment.time), min(end_time, appointment.end_time))
+            # End of code from Stackoverflow
             if len(overlapping) != 0:
                 raise serializers.ValidationError(f"This time is not available.")
         

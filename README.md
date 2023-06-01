@@ -130,7 +130,7 @@ _____________
 
 ### Code
 
-- The code to create array fields is taken from [ZEROTOBYTE](https://zerotobyte.com/django-arrayfield-working-with-arrays/#:~:text=What%20is%20ArrayField%20in%20Django,ForeignKey%2C%20OneToOneField%2C%20and%20ManyToManyField)
+- The code to check if a range of numbers overlap with another range of numbers (to check for overlapping appointments) is taken from [Stackoverflow](https://stackoverflow.com/questions/6821156/how-to-find-range-overlap-in-python)
 
 - The code to get the date corresponding to six months from today is taken from [Stackoverflow](https://stackoverflow.com/questions/546321/how-do-i-calculate-the-date-six-months-from-the-current-date-using-the-datetime)
 
