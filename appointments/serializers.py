@@ -17,6 +17,10 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     client or staff facing serializers """
     service = serializers.ChoiceField(choices=Service.objects.filter(is_active=True))
     end_time = serializers.ReadOnlyField()
+    status = serializers.SerializerMethodField()
+
+    def get_status(self, obj):
+        return 'Past' if obj.date < date.today() else 'Today' if obj.date == date.today() else 'Upcoming'
 
     def validate(self, data):
         # Check that appointment date is not in the past.
@@ -61,7 +65,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = [
-            'id', 'owner', 'service',
+            'id', 'owner', 'service', 'status',
             'date', 'time', 'notes',
             'created_at', 'updated_at',
         ]
@@ -129,7 +133,7 @@ class StaffAppointmentSerializer(BaseAppointmentSerializer):
     class Meta:
         model = Appointment
         fields = [
-            'id', 'owner', 'client_name', 'service',
+            'id', 'owner', 'client_name', 'service', 'status',
             'date', 'time', 'end_time', 'notes',
             'created_at', 'updated_at',
         ]
