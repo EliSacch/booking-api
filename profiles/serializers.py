@@ -24,8 +24,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
-            'id', 'owner', 'created_at', 'updated_at',
-            'name', 'image',
+            'id', 'owner', 'name', 'image',
+            'created_at', 'updated_at',
         ]
 
 
@@ -35,10 +35,13 @@ class ClientSerializer(serializers.ModelSerializer):
     Staff members also cannot access the image, which is not
     relevant as staff member """
     owner = serializers.ReadOnlyField(source='owner.username')
+    appointments_count = serializers.ReadOnlyField()
+    has_appointments_today = serializers.ReadOnlyField()
 
     class Meta:
         model = Profile
         fields = [
-            'id', 'owner', 'created_at', 'updated_at',
-            'name', 'notes',
+            'id', 'owner', 'name', 'notes',
+            'appointments_count', 'has_appointments_today',
+            'created_at', 'updated_at',
         ]

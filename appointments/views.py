@@ -1,5 +1,5 @@
-from rest_framework import generics, permissions
-from django.db.models import Q
+from rest_framework import generics, permissions, filters
+from django.db.models import Count, Q
 from django.contrib.auth.models import User
 
 from .models import Appointment
@@ -16,6 +16,11 @@ class AllAppointmentList(generics.ListCreateAPIView):
     permission_classes = [ permissions.IsAuthenticated, IsStaffMember]
     queryset = Appointment.objects.order_by('-created_at')
     serializer_class = StaffAppointmentSerializer
+    filter_backends = [
+        filters.SearchFilter,
+    ]
+    search_fields = ['owner__username', 'client_name']
+
 
     """ When the user creates an appointment, the reserved slots
      are automatically calculated """
