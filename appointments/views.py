@@ -1,5 +1,6 @@
 from rest_framework import generics, permissions
 from django.db.models import Q
+from django.contrib.auth.models import User
 
 from .models import Appointment
 from services.models import Service
@@ -19,12 +20,19 @@ class AllAppointmentList(generics.ListCreateAPIView):
     """ When the user creates an appointment, the reserved slots
      are automatically calculated """
     def perform_create(self, serializer):
-        # Get the specific service duration
+        # If a user is selected, but the name is not entered, use username as client_name
+        user = self.request.POST['owner']
+        name = self.request.POST['client_name']
+        if user != None and name == "":
+            name = User.objects.get(id=user).username
+        # Get the specific service duration and the start time
         service = self.request.POST['service']
-        duration = Service.objects.filter(title=service).first().duration
+        duration = Service.objects.get(title=service).duration
         start_time = int(self.request.POST['time'])
+        # calculate end time
         end_time = start_time + duration
-        serializer.save(end_time=end_time)
+
+        serializer.save(end_time=end_time, client_name=name)
 
 
 class MyAppointmentList(generics.ListCreateAPIView):
@@ -43,13 +51,17 @@ class MyAppointmentList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # Get the specific service duration
         service = self.request.POST['service']
-        duration = Service.objects.filter(title=service).first().duration
+        duration = Service.objects.get(id=service).duration
         start_time = int(self.request.POST['time'])
         end_time = start_time + duration
 
         """ When the user creates an appointment as client,
         the requesting user is set as owner """
-        serializer.save(owner=self.request.user, client_name=self.request.user.username, end_time=end_time)
+        serializer.save(
+            owner=self.request.user,
+            client_name=self.request.user.username,
+            end_time=end_time
+            )
 
 
 class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -63,7 +75,7 @@ class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         # Get the specific service duration
         service = self.request.POST['service']
-        duration = Service.objects.filter(title=service).first().duration
+        duration = Service.objects.get(id=service).duration
         start_time = int(self.request.POST['time'])
         end_time = start_time + duration
         
@@ -80,10 +92,17 @@ class ClientAppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = StaffAppointmentSerializer
 
     def perform_update(self, serializer):
-        # Get the specific service duration
+        # If a user is selected, but the name is not entered, use username as client_name
+        user = self.request.POST['owner']
+        name = self.request.POST['client_name']
+        if user != None and name == "":
+            name = User.objects.get(id=user).username
+        # Get the specific service duration and the start time
         service = self.request.POST['service']
-        duration = Service.objects.filter(title=service).first().duration
+        duration = Service.objects.get(title=service).duration
         start_time = int(self.request.POST['time'])
         end_time = start_time + duration
         
-        serializer.save(end_time=end_time)
+        serializer.save(end_time=end_time, client_name=name)
+
+

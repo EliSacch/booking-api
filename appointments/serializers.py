@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from rest_framework.fields import empty
 from rest_framework.validators import UniqueTogetherValidator
-from .models import Appointment
 
+from .models import Appointment
 from services.models import Service
 
 from datetime import date
@@ -58,6 +57,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         
         return data
 
+
     class Meta:
         model = Appointment
         fields = [
@@ -100,7 +100,6 @@ class StaffAppointmentSerializer(BaseAppointmentSerializer):
     """ Staff facing serializer.
     Staff members can select an existing user as owner
     or make appointments for unregistered users """
-
     def validate(self, data):
         # Check if owner is null, in that case we make name mandatory.
         if data['owner'] is None and data['client_name'] == "":
