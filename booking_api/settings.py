@@ -71,9 +71,9 @@ REST_AUTH_SERIALIZERS = {
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if 'DEV' in os.environ else False
 
-ALLOWED_HOSTS = ['localhost', 'https://platinum-booking-api.herokuapp.com/']
+ALLOWED_HOSTS = ['localhost', 'platinum-booking-api.herokuapp.com']
 
 
 # Application definition
