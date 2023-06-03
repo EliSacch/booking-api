@@ -18,6 +18,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     service = serializers.ChoiceField(choices=Service.objects.filter(is_active=True))
     end_time = serializers.ReadOnlyField()
     status = serializers.SerializerMethodField()
+    date = serializers.DateField(format='%d %b %Y')
 
     def get_status(self, obj):
         return 'Past' if obj.date < date.today() else 'Today' if obj.date == date.today() else 'Upcoming'
