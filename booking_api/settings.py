@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'cloudinary',
     # REST framework
     'rest_framework',
+    # Django filter
+    'django_filters',
 
     # custom apps
     'profiles',
