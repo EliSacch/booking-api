@@ -164,6 +164,7 @@ Django libraries, frameworks and applications:
   - Django-cloudinary-storage - To connect our Django project to Cloudinary
   - Pillow - To add image processing capabilities to our project
   - Django REST framework - To build the web API
+  - Simplejwt - to use django web tokens
 
 Database and storage:
   - PostgreSQL - Relational database system

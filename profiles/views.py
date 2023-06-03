@@ -46,5 +46,8 @@ class ClientProfileDetail(generics.RetrieveUpdateAPIView):
     This is the staff facing profile detail view 
     this is why it uses the Client Serializer """
     permission_classes = [permissions.IsAuthenticated, IsStaffMember]
-    queryset = Profile.objects.order_by('-created_at')
+    queryset = Profile.objects.annotate(
+        appointments_count=Count('owner__appointment', distinct=True),
+        has_appointments_today = Count('owner__appointment', filter=Q(owner__appointment__date=date.today()), distinct=True),
+    ).order_by('-created_at')
     serializer_class = ClientSerializer
