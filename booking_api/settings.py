@@ -49,7 +49,7 @@ REST_FRAMEWORK = {
 
 # Make sure to render just JSON in production
 if 'DEV' not in os.environ:
-    REST_FRAMEWORK['DEFAULT_RENDER_CLASSES'] = [
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
         'rest_framework.renderers.JSONRenderer',
     ]
 
