@@ -76,6 +76,7 @@ DEBUG = True if 'DEV' in os.environ else False
 ALLOWED_HOSTS = [
      os.environ.get('ALLOWED_HOST'),
      'localhost',
+     '127.0.0.1',
      ]
 
 
@@ -108,7 +109,7 @@ INSTALLED_APPS = [
     # custom apps
     'profiles',
     'appointments',
-    'services',
+    'allservices',
 ]
 
 SITE_ID = 1

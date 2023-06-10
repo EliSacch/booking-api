@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 from .filters import AppointmentFilter
 from .models import Appointment
-from services.models import Service
+from allservices.models import Service
 from .serializers import StaffAppointmentSerializer, ClientAppointmentSerializer
 
 from booking_api.permissions import IsOwner, IsStaffMember, IsStaffMemberOrOwner

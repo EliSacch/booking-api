@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from .models import Appointment
-from services.models import Service
+from allservices.models import Service
 
 from datetime import date
 from django.utils import timezone
@@ -40,7 +40,9 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
              raise serializers.ValidationError("Sorry, we are closed! We are open Tuesday to Saturday.")
         
         # Find the time range (start_time - end_time) for the current instance
-        duration = data['service'].duration
+        duration = 50
+        if data['service']:
+            duration = data['service'].duration
         start_time = data['time']
         end_time = start_time+duration
 
@@ -134,7 +136,9 @@ class StaffAppointmentSerializer(BaseAppointmentSerializer):
     class Meta:
         model = Appointment
         fields = [
-            'id', 'owner', 'client_name', 'service', 'status',
+            'id', 'owner', 'client_name', 
+            'service', 
+            'status',
             'date', 'time', 'end_time', 'notes',
             'created_at', 'updated_at',
         ]

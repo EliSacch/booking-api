@@ -15,5 +15,5 @@ urlpatterns = [
     ),
     path('', include('profiles.urls')),
     path('', include('appointments.urls')),
-    path('', include('services.urls')),
+    path('', include('allservices.urls')),
 ]

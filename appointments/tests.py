@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from .models import Appointment
-from services.models import Service
+from allservices.models import Service
 
 from rest_framework import status
 from rest_framework.test import APITestCase
