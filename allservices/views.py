@@ -20,7 +20,7 @@ class ServiceList(generics.ListCreateAPIView):
 class ClientFacingServiceList(generics.ListAPIView):
     """ List all services, accessible to clients.
     Clients can only review the available services, but they cannot edit them """
-    permission_classes = [ permissions.IsAuthenticated ]
+    permission_classes = [ permissions.SAFE_METHODS ]
     queryset = Service.objects.filter(is_active=True).order_by('-created_at')
     serializer_class = ClientFacingServiceSerializer
 

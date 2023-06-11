@@ -15,7 +15,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     """ Base Serializer for the appointment model. 
     It will be user as blueprint for the two 
     client or staff facing serializers """
-    service = serializers.ChoiceField(choices=Service.objects.filter(is_active=True))
+    #service = serializers.ChoiceField(choices=Service.objects.filter(is_active=True))
     end_time = serializers.ReadOnlyField()
     status = serializers.SerializerMethodField()
     date = serializers.DateField(format='%d %b %Y')
@@ -68,7 +68,9 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = [
-            'id', 'owner', 'service', 'status',
+            'id', 'owner', 
+            'service', 
+            'status',
             'date', 'time', 'notes',
             'created_at', 'updated_at',
         ]
