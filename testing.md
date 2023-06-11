@@ -110,13 +110,11 @@ While they cannot access the client profile, as expected, since the user 'admin'
 
 
 <details>
-  <summary> Title:</summary>
+  <summary>Deployed site giving error 400 Bad Request</summary>
 
-  - Issue: 
+  - Issue: When trying to acess the deployed app, I was receiving erro 400 bad request.
 
-![](media/bugs)
-
-  - Fix:
+  - Fix: After turning on debug mode I could see that heroku was not in "ALLOWED_HOSTS". Even though I added it when I first deployed the project, I must have removed it by accident. After adding it again the error was fixed.
 
 </details>
 
