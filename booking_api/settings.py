@@ -76,6 +76,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
      os.environ.get('ALLOWED_HOST'),
+     'platinum-booking-api.herokuapp.com',
      'localhost',
      '127.0.0.1',
      ]
