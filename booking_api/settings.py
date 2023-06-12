@@ -132,8 +132,7 @@ if 'CLIENT_ORIGIN' in os.environ:
     ]
 else:
     CORS_ALLOWED_ORIGIN_REGEXES = [
-    #os.environ.get('CLIENT_ORIGIN_DEV')
-    r"^http://.*\.localhost:3000",
+    os.environ.get('CLIENT_ORIGIN_DEV')
     ]
 
 CORS_ALLOW_CREDENTIALS = True
