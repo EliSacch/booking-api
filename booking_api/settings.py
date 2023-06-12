@@ -128,12 +128,13 @@ MIDDLEWARE = [
 
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN')
+        os.environ.get('CLIENT_ORIGIN'),
+        "http://localhost:3000",
     ]
-if 'CLIENT_ORIGIN_DEV' in os.environ:
+"""if 'CLIENT_ORIGIN_DEV' in os.environ:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         os.environ.get('CLIENT_ORIGIN_DEV'),
-    ]
+    ]"""
 
 CORS_ALLOW_CREDENTIALS = True
 
