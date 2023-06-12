@@ -131,8 +131,8 @@ if 'CLIENT_ORIGIN' in os.environ:
         os.environ.get('CLIENT_ORIGIN')
     ]
 if 'CLIENT_ORIGIN_DEV' in os.environ:
-    CORS_ALLOWED_ORIGIN = [
-        os.environ.get('CLIENT_ORIGIN_DEV')
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        os.environ.get('CLIENT_ORIGIN_DEV'),
     ]
 
 CORS_ALLOW_CREDENTIALS = True
