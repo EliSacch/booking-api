@@ -57,7 +57,8 @@ if 'DEV' not in os.environ:
 REST_USE_JWT = True
 JWT_AUTH_SECURE = True
 JWT_AUTH_COOKIES = 'booking-api-auth'
-JWT_AUTH_REFRESH_COOKIE = 'booking-api-refresh-token'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
+JWT_AUTH_SAMESITE = 'None'
 
 # Override the default user detail serializer
 REST_AUTH_SERIALIZERS = {
@@ -79,19 +80,6 @@ ALLOWED_HOSTS = [
      'localhost',
      '127.0.0.1',
      ]
-
-if 'CLIENT_ORIGIN' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN')
-    ]
-
-if 'CLIENT_ORIGIN_DEV' in os.environ:
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        os.environ.get('CLIENT_ORIGIN_DEV')
-    ]
-
-CORS_ALLOW_CREDENTIALS = True
-
 
 # Application definition
 
@@ -137,6 +125,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if 'CLIENT_ORIGIN' in os.environ:
+    CORS_ALLOWED_ORIGINS = [
+    os.environ.get('CLIENT_ORIGIN')
+    ]
+else:
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+    #os.environ.get('CLIENT_ORIGIN_DEV')
+    r"^http://.*\.localhost:3000",
+    ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'booking_api.urls'
 
