@@ -1,6 +1,11 @@
 from rest_framework import permissions
 
 
+class ReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.method in permissions.SAFE_METHODS
+
+
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """ This custom permission allows only the owner
     to access unsafe methods, but it gives read access to

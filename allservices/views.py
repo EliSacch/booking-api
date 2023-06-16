@@ -6,7 +6,7 @@ from .serializers import ServiceSerializer, ClientFacingServiceSerializer
 from rest_framework.response import Response
 from django.db.models import ProtectedError
 
-from booking_api.permissions import IsStaffMember
+from booking_api.permissions import IsStaffMember, ReadOnly
 
 
 class ServiceList(generics.ListCreateAPIView):
@@ -20,7 +20,7 @@ class ServiceList(generics.ListCreateAPIView):
 class ClientFacingServiceList(generics.ListAPIView):
     """ List all services, accessible to clients.
     Clients can only review the available services, but they cannot edit them """
-    permission_classes = [ permissions.SAFE_METHODS ]
+    permission_classes = [ ReadOnly ]
     queryset = Service.objects.filter(is_active=True).order_by('-created_at')
     serializer_class = ClientFacingServiceSerializer
 
