@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-#from treatments.models import Treatment
+from treatments.models import Treatment
 
 
 class Appointment(models.Model):
@@ -26,7 +26,7 @@ class Appointment(models.Model):
     
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     client_name = models.CharField(max_length=255, null=True, blank=True)
-    #service = models.ForeignKey(Service, on_delete=models.PROTECT, null=True)
+    treatment = models.ForeignKey(Treatment, on_delete=models.PROTECT, null=True)
     date = models.DateField()
     time = models.IntegerField(choices=Slot.choices, default=Slot.NINE)
     end_time = models.IntegerField()
