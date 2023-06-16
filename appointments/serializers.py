@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from .models import Appointment
-#from allservices.models import Service
+from treatments.models import Treatment
 
 from datetime import date
 from django.utils import timezone
@@ -15,7 +15,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     """ Base Serializer for the appointment model. 
     It will be user as blueprint for the two 
     client or staff facing serializers """
-    #service = serializers.ChoiceField(choices=Service.objects.filter(is_active=True))
+    treatment = serializers.ChoiceField(choices=Treatment.objects.filter(is_active=True))
     end_time = serializers.ReadOnlyField()
     status = serializers.SerializerMethodField()
     date = serializers.DateField(format='%d %b %Y')
@@ -41,8 +41,8 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         
         # Find the time range (start_time - end_time) for the current instance
         duration = 50
-        if data['service']:
-            duration = data['service'].duration
+        if data['treatment']:
+            duration = data['treatment'].duration
         start_time = data['time']
         end_time = start_time+duration
 
@@ -69,7 +69,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         model = Appointment
         fields = [
             'id', 'owner', 
-            #'service', 
+            'treatment', 
             'status',
             'date', 'time', 'notes',
             'created_at', 'updated_at',
@@ -84,7 +84,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     # The following code is from Stackoverflow - link in README
     def to_representation(self, instance):
         rep = super(BaseAppointmentSerializer, self).to_representation(instance)
-        #rep['service'] = instance.service.title
+        rep['treatment'] = instance.treatment.title
         if rep['owner']:
             rep['owner'] = instance.owner.username
         return rep
@@ -139,7 +139,7 @@ class StaffAppointmentSerializer(BaseAppointmentSerializer):
         model = Appointment
         fields = [
             'id', 'owner', 'client_name', 
-            #'service', 
+            'treatment', 
             'status',
             'date', 'time', 'end_time', 'notes',
             'created_at', 'updated_at',

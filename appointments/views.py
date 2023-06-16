@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 from .filters import AppointmentFilter
 from .models import Appointment
-#from allservices.models import Service
+from treatments.models import Treatment
 from .serializers import StaffAppointmentSerializer, ClientAppointmentSerializer
 
 from booking_api.permissions import IsOwner, IsStaffMember, IsStaffMemberOrOwner
@@ -36,13 +36,12 @@ class AllAppointmentList(generics.ListCreateAPIView):
         name = self.request.POST['client_name']
         if user != None and name == "":
             name = User.objects.get(id=user).username
-        # Get the specific service duration and the start time
-        service = self.request.POST['service']
-        #duration = Service.objects.get(title=service).duration
+        # Get the specific treatment duration and the start time
+        treatment = self.request.POST['treatment']
+        duration = Treatment.objects.get(title=treatment).duration
         start_time = int(self.request.POST['time'])
         # calculate end time
-        #end_time = start_time + duration
-        end_time = 1000 # To be removed
+        end_time = start_time + duration
 
         serializer.save(end_time=end_time, client_name=name)
 
@@ -61,12 +60,11 @@ class MyAppointmentList(generics.ListCreateAPIView):
     """ When the user creates an appointment, the reserved slots
      are automatically calculated """
     def perform_create(self, serializer):
-        # Get the specific service duration
-        service = self.request.POST['service']
-        #duration = Service.objects.get(id=service).duration
+        # Get the specific treatment duration
+        treatment = self.request.POST['treatment']
+        duration = Treatment.objects.get(id=treatment).duration
         start_time = int(self.request.POST['time'])
-        #end_time = start_time + duration
-        end_time = 1000 # to be removed
+        end_time = start_time + duration
 
         """ When the user creates an appointment as client,
         the requesting user is set as owner """
@@ -86,12 +84,11 @@ class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ClientAppointmentSerializer
 
     def perform_update(self, serializer):
-        # Get the specific service duration
-       # service = self.request.POST['service']
-        #duration = Service.objects.get(id=service).duration
+        # Get the specific treatment duration
+        treatment = self.request.POST['treatment']
+        duration = Treatment.objects.get(id=treatment).duration
         start_time = int(self.request.POST['time'])
-        #end_time = start_time + duration
-        end_time=1000 # to be removed
+        end_time = start_time + duration
         
         serializer.save(end_time=end_time)
 
@@ -111,12 +108,11 @@ class ClientAppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
         name = self.request.POST['client_name']
         if user != None and name == "":
             name = User.objects.get(id=user).username
-        # Get the specific service duration and the start time
-        #service = self.request.POST['service']
-        #duration = Service.objects.get(title=service).duration
+        # Get the specific treatment duration and the start time
+        treatment = self.request.POST['treatment']
+        duration = Treatment.objects.get(title=treatment).duration
         start_time = int(self.request.POST['time'])
-        #end_time = start_time + duration
-        end_time=1000 # to be removed
+        end_time = start_time + duration
         
         serializer.save(end_time=end_time, client_name=name)
 
