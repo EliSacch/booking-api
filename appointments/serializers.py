@@ -46,6 +46,10 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         start_time = data['time']
         end_time = start_time+duration
 
+        #Check that end-time is not after closing time (17:00)
+        if end_time > 1700:
+            raise serializers.ValidationError(f"This appointment is too late")
+
         # Retrieve all appointments for the same date
         same_day_appointments = Appointment.objects.filter(date=data["date"])
         # For PUT method, exclude the current instance from the queryset

@@ -62,7 +62,7 @@ class MyAppointmentList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # Get the specific treatment duration
         treatment = self.request.POST['treatment']
-        duration = Treatment.objects.get(id=treatment).duration
+        duration = Treatment.objects.get(title=treatment).duration
         start_time = int(self.request.POST['time'])
         end_time = start_time + duration
 
