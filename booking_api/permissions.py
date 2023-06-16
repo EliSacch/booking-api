@@ -40,3 +40,16 @@ class IsStaffMemberOrOwner(permissions.BasePermission):
             return True
         else:
             return False
+        
+    
+class IsStaffMemberOrReadOnly(permissions.BasePermission):
+    """ This permission allows read access to all users and
+    pther methods access to staff members only """
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user.is_staff == True
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user.is_staff == True

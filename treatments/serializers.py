@@ -20,8 +20,8 @@ DURATION_CHOICES = [
         (750, '07:30'),
     ]
 
-class ServiceSerializer(serializers.ModelSerializer):
-    """ Serializer for the service model. 
+class TreatmentSerializer(serializers.ModelSerializer):
+    """ Serializer for the treatment model. 
     All information are accessible to staff members only """
     
     duration = serializers.ChoiceField(choices=DURATION_CHOICES)
@@ -49,8 +49,8 @@ class ServiceSerializer(serializers.ModelSerializer):
         ]
 
 
-class ClientFacingServiceSerializer(serializers.ModelSerializer):
-    """ Serializer for the service model. 
+class ClientFacingTreatmentSerializer(serializers.ModelSerializer):
+    """ Serializer for the treatment model. 
     The following information are accessible to clients """
     
     duration = serializers.ChoiceField(choices=DURATION_CHOICES)

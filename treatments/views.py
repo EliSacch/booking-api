@@ -1,36 +1,31 @@
 from rest_framework import generics, permissions, status
 
 from .models import Treatment
-from .serializers import ServiceSerializer, ClientFacingServiceSerializer
+from .serializers import TreatmentSerializer, ClientFacingTreatmentSerializer
 
 from rest_framework.response import Response
 from django.db.models import ProtectedError
 
-from booking_api.permissions import IsStaffMember, ReadOnly
+from booking_api.permissions import IsStaffMemberOrReadOnly
 
 
-class ServiceList(generics.ListCreateAPIView):
-    """ List all services, or create a new one.
-    This services list can be accessed by the staff members only """
-    permission_classes = [ permissions.IsAuthenticated, IsStaffMember]
+class TreatmentList(generics.ListCreateAPIView):
+    """ List all treatmentss, or create a new one if logged in as staff """
+    permission_classes = [ permissions.IsAuthenticatedOrReadOnly, IsStaffMemberOrReadOnly ]
     queryset = Treatment.objects.order_by('-created_at')
-    serializer_class = ServiceSerializer
+    
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+                return TreatmentSerializer
+        return ClientFacingTreatmentSerializer
 
 
-class ClientFacingServiceList(generics.ListAPIView):
-    """ List all services, accessible to clients.
-    Clients can only review the available services, but they cannot edit them """
-    permission_classes = [ ReadOnly ]
-    queryset = Treatment.objects.filter(is_active=True).order_by('-created_at')
-    serializer_class = ClientFacingServiceSerializer
-
-
-class ServiceDetail(generics.RetrieveUpdateDestroyAPIView):
-    """ Retrieve the specific service and allow
+class TreatmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    """ Retrieve the specific treatment and allow
     update and delete functionality """
-    permission_classes = [ permissions.IsAuthenticated, IsStaffMember]
+    permission_classes = [ permissions.IsAuthenticatedOrReadOnly, IsStaffMemberOrReadOnly]
     queryset = Treatment.objects.all()
-    serializer_class = ServiceSerializer
+    serializer_class = TreatmentSerializer
 
     # The following code to catch ProtectedError is from Stacjoverflow - Link in README
     def destroy(self, request, *args, **kwargs):
