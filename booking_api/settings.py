@@ -110,7 +110,7 @@ INSTALLED_APPS = [
     # custom apps
     'profiles',
     'appointments',
-    'allservices',
+    'treatments',
 ]
 
 SITE_ID = 1

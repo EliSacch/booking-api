@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 from .filters import AppointmentFilter
 from .models import Appointment
-from allservices.models import Service
+#from allservices.models import Service
 from .serializers import StaffAppointmentSerializer, ClientAppointmentSerializer
 
 from booking_api.permissions import IsOwner, IsStaffMember, IsStaffMemberOrOwner
@@ -38,10 +38,11 @@ class AllAppointmentList(generics.ListCreateAPIView):
             name = User.objects.get(id=user).username
         # Get the specific service duration and the start time
         service = self.request.POST['service']
-        duration = Service.objects.get(title=service).duration
+        #duration = Service.objects.get(title=service).duration
         start_time = int(self.request.POST['time'])
         # calculate end time
-        end_time = start_time + duration
+        #end_time = start_time + duration
+        end_time = 1000 # To be removed
 
         serializer.save(end_time=end_time, client_name=name)
 
@@ -62,9 +63,10 @@ class MyAppointmentList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # Get the specific service duration
         service = self.request.POST['service']
-        duration = Service.objects.get(id=service).duration
+        #duration = Service.objects.get(id=service).duration
         start_time = int(self.request.POST['time'])
-        end_time = start_time + duration
+        #end_time = start_time + duration
+        end_time = 1000 # to be removed
 
         """ When the user creates an appointment as client,
         the requesting user is set as owner """
@@ -85,10 +87,11 @@ class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         # Get the specific service duration
-        service = self.request.POST['service']
-        duration = Service.objects.get(id=service).duration
+       # service = self.request.POST['service']
+        #duration = Service.objects.get(id=service).duration
         start_time = int(self.request.POST['time'])
-        end_time = start_time + duration
+        #end_time = start_time + duration
+        end_time=1000 # to be removed
         
         serializer.save(end_time=end_time)
 
@@ -109,10 +112,11 @@ class ClientAppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
         if user != None and name == "":
             name = User.objects.get(id=user).username
         # Get the specific service duration and the start time
-        service = self.request.POST['service']
-        duration = Service.objects.get(title=service).duration
+        #service = self.request.POST['service']
+        #duration = Service.objects.get(title=service).duration
         start_time = int(self.request.POST['time'])
-        end_time = start_time + duration
+        #end_time = start_time + duration
+        end_time=1000 # to be removed
         
         serializer.save(end_time=end_time, client_name=name)
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Service
+from .models import Treatment
 
 
 DURATION_CHOICES = [
@@ -41,7 +41,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 
     class Meta:
-        model = Service
+        model = Treatment
         fields = [
             'id', 'title', 'description',
             'price', 'duration', 'image',
@@ -70,7 +70,7 @@ class ClientFacingServiceSerializer(serializers.ModelSerializer):
 
 
     class Meta:
-        model = Service
+        model = Treatment
         fields = [
             'id', 'title', 'description',
             'price', 'duration', 'image',

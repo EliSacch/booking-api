@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions, status
 
-from .models import Service
+from .models import Treatment
 from .serializers import ServiceSerializer, ClientFacingServiceSerializer
 
 from rest_framework.response import Response
@@ -13,7 +13,7 @@ class ServiceList(generics.ListCreateAPIView):
     """ List all services, or create a new one.
     This services list can be accessed by the staff members only """
     permission_classes = [ permissions.IsAuthenticated, IsStaffMember]
-    queryset = Service.objects.order_by('-created_at')
+    queryset = Treatment.objects.order_by('-created_at')
     serializer_class = ServiceSerializer
 
 
@@ -21,7 +21,7 @@ class ClientFacingServiceList(generics.ListAPIView):
     """ List all services, accessible to clients.
     Clients can only review the available services, but they cannot edit them """
     permission_classes = [ ReadOnly ]
-    queryset = Service.objects.filter(is_active=True).order_by('-created_at')
+    queryset = Treatment.objects.filter(is_active=True).order_by('-created_at')
     serializer_class = ClientFacingServiceSerializer
 
 
@@ -29,7 +29,7 @@ class ServiceDetail(generics.RetrieveUpdateDestroyAPIView):
     """ Retrieve the specific service and allow
     update and delete functionality """
     permission_classes = [ permissions.IsAuthenticated, IsStaffMember]
-    queryset = Service.objects.all()
+    queryset = Treatment.objects.all()
     serializer_class = ServiceSerializer
 
     # The following code to catch ProtectedError is from Stacjoverflow - Link in README

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from .models import Appointment
-from allservices.models import Service
+#from allservices.models import Service
 
 from datetime import date
 from django.utils import timezone
@@ -69,7 +69,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         model = Appointment
         fields = [
             'id', 'owner', 
-            'service', 
+            #'service', 
             'status',
             'date', 'time', 'notes',
             'created_at', 'updated_at',
@@ -84,7 +84,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     # The following code is from Stackoverflow - link in README
     def to_representation(self, instance):
         rep = super(BaseAppointmentSerializer, self).to_representation(instance)
-        rep['service'] = instance.service.title
+        #rep['service'] = instance.service.title
         if rep['owner']:
             rep['owner'] = instance.owner.username
         return rep
@@ -139,7 +139,7 @@ class StaffAppointmentSerializer(BaseAppointmentSerializer):
         model = Appointment
         fields = [
             'id', 'owner', 'client_name', 
-            'service', 
+            #'service', 
             'status',
             'date', 'time', 'end_time', 'notes',
             'created_at', 'updated_at',

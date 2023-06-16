@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
 
-class Service(models.Model):
+class Treatment(models.Model):
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
     price = models.FloatField(default=20.00)
