@@ -62,7 +62,7 @@ JWT_AUTH_SAMESITE = 'None'
 
 # Override the default user detail serializer
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAIL_SERIALIZER': 'booking_api.serializers.CurrentUserSerializer'
+    'USER_DETAILS_SERIALIZER': 'booking_api.serializers.CurrentUserSerializer'
 }
 
 
