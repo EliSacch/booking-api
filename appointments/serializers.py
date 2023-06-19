@@ -18,7 +18,6 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     treatment = serializers.ChoiceField(choices=Treatment.objects.filter(is_active=True))
     end_time = serializers.ReadOnlyField()
     status = serializers.SerializerMethodField()
-    date = serializers.DateField(format='%d %b %Y')
     is_owner = serializers.SerializerMethodField()
 
     def get_is_owner(self, obj):

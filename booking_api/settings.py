@@ -46,7 +46,6 @@ REST_FRAMEWORK = {
         'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DATETIME_FORMAT': '%d %b %Y',
-    "DATE_INPUT_FORMATS": ['%Y-%m-%d'],
 }
 
 # Make sure to render just JSON in production
