@@ -7,6 +7,11 @@ class ProfileSerializer(serializers.ModelSerializer):
     Clients cannot access the 'notes' field, which is meant
     for staff members only."""
     owner = serializers.ReadOnlyField(source='owner.username')
+    is_owner = serializers.SerializerMethodField()
+
+    def get_is_owner(self, obj):
+        request = self.context['request']
+        return request.user == obj.owner
 
     def validate_image(self, value):
         if value.size > 2 * 1024 * 1024:
@@ -24,7 +29,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
-            'id', 'owner', 'name', 'image',
+            'id', 'owner', 'is_owner',
+            'name', 'image',
             'created_at', 'updated_at',
         ]
 
@@ -41,7 +47,8 @@ class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
-            'id', 'owner', 'name', 'notes',
+            'id', 'owner', 'is_owner',
+            'name', 'notes',
             'appointments_count', 'has_appointments_today',
             'created_at', 'updated_at',
         ]

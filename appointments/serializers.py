@@ -19,6 +19,11 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     end_time = serializers.ReadOnlyField()
     status = serializers.SerializerMethodField()
     date = serializers.DateField(format='%d %b %Y')
+    is_owner = serializers.SerializerMethodField()
+
+    def get_is_owner(self, obj):
+        request = self.context['request']
+        return request.user == obj.owner
 
     def get_status(self, obj):
         return 'Past' if obj.date < date.today() else 'Today' if obj.date == date.today() else 'Upcoming'
@@ -72,7 +77,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = [
-            'id', 'owner', 
+            'id', 'owner', 'is_owner',
             'treatment', 
             'status',
             'date', 'time', 'notes',
@@ -142,7 +147,8 @@ class StaffAppointmentSerializer(BaseAppointmentSerializer):
     class Meta:
         model = Appointment
         fields = [
-            'id', 'owner', 'client_name', 
+            'id', 'owner', 'is_owner',
+            'client_name', 
             'treatment', 
             'status',
             'date', 'time', 'end_time', 'notes',
