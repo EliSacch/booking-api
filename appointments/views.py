@@ -14,7 +14,7 @@ from booking_api.permissions import IsOwner, IsStaffMember, IsStaffMemberOrOwner
 from datetime import date as d
 
 
-class AllAppointmentList(generics.ListCreateAPIView):
+class AppointmentList(generics.ListCreateAPIView):
     """ List all appointments, or create a new one.
     The appointment list can be accessed by the staff members only,
      while each client can see only their own appointments """

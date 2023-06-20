@@ -92,7 +92,8 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
     # The following code is from Stackoverflow - link in README
     def to_representation(self, instance):
         rep = super(BaseAppointmentSerializer, self).to_representation(instance)
-        rep['treatment'] = instance.treatment.title
+        if rep['treatment']:
+            rep['treatment'] = instance.treatment.title
         if rep['owner']:
             rep['owner'] = instance.owner.username
         return rep

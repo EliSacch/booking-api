@@ -44,6 +44,12 @@ class ClientSerializer(serializers.ModelSerializer):
     appointments_count = serializers.ReadOnlyField()
     has_appointments_today = serializers.ReadOnlyField()
 
+    is_owner = serializers.SerializerMethodField()
+
+    def get_is_owner(self, obj):
+        request = self.context['request']
+        return request.user == obj.owner
+
     class Meta:
         model = Profile
         fields = [
