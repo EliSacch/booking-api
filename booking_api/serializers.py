@@ -6,7 +6,7 @@ class CurrentUserSerializer(UserDetailsSerializer):
     profile_id = serializers.ReadOnlyField(source='profile.id')
     profile_image = serializers.ReadOnlyField(source='profile.image.url')
     profile_name = serializers.ReadOnlyField(source='profile.name')
-    profile_notes = name = serializers.ReadOnlyField(source='profile.name')
+    profile_notes = serializers.ReadOnlyField(source='profile.notes')
     is_staff = serializers.SerializerMethodField()
 
     def get_is_staff(self, obj):
