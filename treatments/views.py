@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, filters
 
 from .models import Treatment
 from .serializers import TreatmentSerializer, ClientFacingTreatmentSerializer
@@ -13,6 +13,10 @@ class TreatmentList(generics.ListCreateAPIView):
     """ List all treatmentss, or create a new one if logged in as staff """
     permission_classes = [ permissions.IsAuthenticatedOrReadOnly, IsStaffMemberOrReadOnly ]
     queryset = Treatment.objects.order_by('-created_at')
+    filter_backends = [
+        filters.SearchFilter,
+    ]
+    search_fields = ['title',]
     
     def get_serializer_class(self):
         if self.request.user.is_staff:
