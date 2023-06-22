@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Profile
+from django.contrib.auth.models import User
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -57,4 +58,13 @@ class ClientSerializer(serializers.ModelSerializer):
             'name', 'notes',
             'appointments_count', 'has_appointments_today',
             'created_at', 'updated_at',
+        ]
+
+class UserSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField()
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'is_staff',
         ]

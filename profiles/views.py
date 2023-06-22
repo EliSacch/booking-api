@@ -2,7 +2,8 @@ from django.db.models import Count, Q
 from rest_framework import generics, permissions, filters
 
 from .models import Profile
-from .serializers import ProfileSerializer, ClientSerializer
+from django.contrib.auth.models import User
+from .serializers import ProfileSerializer, ClientSerializer, UserSerializer
 
 from booking_api.permissions import IsOwner, IsStaffMember
 
@@ -51,3 +52,8 @@ class ClientProfileDetail(generics.RetrieveUpdateAPIView):
         has_appointments_today = Count('owner__appointment', filter=Q(owner__appointment__date=date.today()), distinct=True),
     ).order_by('-created_at')
     serializer_class = ClientSerializer
+
+class SetIsStaff(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, IsStaffMember]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
