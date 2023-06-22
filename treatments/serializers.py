@@ -62,4 +62,5 @@ class ClientFacingTreatmentSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'description',
             'price', 'duration', 'image',
+            'is_active',
         ]
