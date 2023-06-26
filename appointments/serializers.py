@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from .models import Appointment
+from django.contrib.auth.models import User
 from treatments.models import Treatment
 
 from datetime import date
@@ -94,8 +95,6 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         rep = super(BaseAppointmentSerializer, self).to_representation(instance)
         if rep['treatment']:
             rep['treatment'] = instance.treatment.title
-        if rep['owner']:
-            rep['owner'] = instance.owner.username
         return rep
     # End of code from
 
@@ -118,6 +117,8 @@ class StaffAppointmentSerializer(BaseAppointmentSerializer):
     """ Staff facing serializer.
     Staff members can select an existing user as owner
     or make appointments for unregistered users """
+    owner_username = serializers.ReadOnlyField(source='owner.username')
+
     def validate(self, data):
         # Check if owner is null, in that case we make name mandatory.
         if data['owner'] is None and data['client_name'] == "":
@@ -147,7 +148,7 @@ class StaffAppointmentSerializer(BaseAppointmentSerializer):
     class Meta:
         model = Appointment
         fields = [
-            'id', 'owner', 'is_owner',
+            'id', 'owner', 'owner_username',
             'client_name', 
             'treatment', 
             'status',
