@@ -10,7 +10,7 @@ from booking_api.permissions import IsStaffMemberOrReadOnly
 
 
 class TreatmentList(generics.ListCreateAPIView):
-    """ List all treatmentss, or create a new one if logged in as staff """
+    """ List all treatments, or create a new one if logged in as staff """
     permission_classes = [ permissions.IsAuthenticatedOrReadOnly, IsStaffMemberOrReadOnly ]
     queryset = Treatment.objects.order_by('-created_at')
     filter_backends = [
@@ -40,7 +40,7 @@ class TreatmentDetail(generics.RetrieveUpdateDestroyAPIView):
 
         # if protected, cannot be deleted, show error message
         except ProtectedError as exception:
-            message = f"You cannot delete this Service because it is being used. Please, set it to inactive."
+            message = f"You cannot delete this Treatment because it is being used. Please, set it to inactive."
             response_msg = {
                 "error": {"message": message},
             }
