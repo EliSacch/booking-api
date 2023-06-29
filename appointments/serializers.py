@@ -106,7 +106,8 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         validators = [
             UniqueTogetherValidator(
                 queryset=Appointment.objects.all(),
-                fields=['date', 'time']
+                fields=['date', 'time'],
+                message="There is already an appointment for this time."
             )
         ]
 
