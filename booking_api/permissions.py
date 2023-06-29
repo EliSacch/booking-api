@@ -24,10 +24,11 @@ class IsOwner(permissions.BasePermission):
 
 
 class IsStaffMember(permissions.BasePermission):
-    """ This permission allows access to the staff members only. 
+    """ This permission allows access to the staff members only.
     The owner has no access as well """
     def has_permission(self, request, view):
         return request.user.is_staff
+
     def has_object_permission(self, request, view, obj):
         return request.user.is_staff
 
@@ -36,20 +37,21 @@ class IsStaffMemberOrOwner(permissions.BasePermission):
     """ This permission allows access to the staff members
     or to the owner """
     def has_object_permission(self, request, view, obj):
-        if request.user.is_staff == True or obj.owner == request.user:
+        if request.user.is_staff is True or obj.owner == request.user:
             return True
         else:
             return False
-        
-    
+
+
 class IsStaffMemberOrReadOnly(permissions.BasePermission):
     """ This permission allows read access to all users and
     pther methods access to staff members only """
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user.is_staff == True
+        return request.user.is_staff is True
+
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user.is_staff == True
+        return request.user.is_staff is True

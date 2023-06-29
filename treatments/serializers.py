@@ -20,10 +20,11 @@ DURATION_CHOICES = [
         (750, '07:30'),
     ]
 
+
 class TreatmentSerializer(serializers.ModelSerializer):
-    """ Serializer for the treatment model. 
+    """ Serializer for the treatment model.
     All information are accessible to staff members only """
-    
+
     duration = serializers.ChoiceField(choices=DURATION_CHOICES)
 
     def validate_image(self, value):
@@ -38,12 +39,11 @@ class TreatmentSerializer(serializers.ModelSerializer):
                 'Image width larger than 4096px!'
             )
         return value
-    
+
     def validate_price(self, value):
-        if value <0:
+        if value < 0:
             raise serializers.ValidationError('The price cannot be negative')
         return value
-
 
     class Meta:
         model = Treatment
@@ -55,7 +55,7 @@ class TreatmentSerializer(serializers.ModelSerializer):
 
 
 class ClientFacingTreatmentSerializer(serializers.ModelSerializer):
-    """ Serializer for the treatment model. 
+    """ Serializer for the treatment model.
     The following information are accessible to clients """
     class Meta:
         model = Treatment

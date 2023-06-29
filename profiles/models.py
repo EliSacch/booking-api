@@ -20,8 +20,8 @@ class Profile(models.Model):
         return f"{self.owner}'s profile"
 
 
-""" This function creates a new profile """
 def create_profile(sender, instance, created, **kwargs):
+    """ This function creates a new profile """
     if created:
         Profile.objects.create(owner=instance)
 

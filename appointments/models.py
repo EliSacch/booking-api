@@ -23,10 +23,17 @@ class Appointment(models.Model):
         SIXTEEN = 1600, '16:00'
         HALFSIXTEEN = 1650, '16:30'
 
-    
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True, blank=True
+        )
     client_name = models.CharField(max_length=255, null=True, blank=True)
-    treatment = models.ForeignKey(Treatment, on_delete=models.PROTECT, null=True)
+    treatment = models.ForeignKey(
+        Treatment,
+        on_delete=models.PROTECT,
+        null=True
+        )
     date = models.DateField()
     time = models.IntegerField(choices=Slot.choices, default=Slot.NINE)
     end_time = models.IntegerField()

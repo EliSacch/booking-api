@@ -2,7 +2,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from .models import Appointment
-from django.contrib.auth.models import User
 from treatments.models import Treatment
 
 from datetime import date
@@ -13,10 +12,12 @@ import math
 
 
 class BaseAppointmentSerializer(serializers.ModelSerializer):
-    """ Base Serializer for the appointment model. 
-    It will be user as blueprint for the two 
+    """ Base Serializer for the appointment model.
+    It will be user as blueprint for the two
     client or staff facing serializers """
-    treatment = serializers.ChoiceField(choices=Treatment.objects.filter(is_active=True))
+    treatment = serializers.ChoiceField(
+        choices=Treatment.objects.filter(is_active=True)
+        )
     end_time = serializers.ReadOnlyField()
     status = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
@@ -26,24 +27,35 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         return request.user == obj.owner
 
     def get_status(self, obj):
-        return 'Past' if obj.date < date.today() else 'Today' if obj.date == date.today() else 'Upcoming'
+        return (
+            'Past' if obj.date < date.today()
+            else 'Today' if obj.date == date.today()
+            else 'Upcoming'
+            )
 
     def validate(self, data):
         # Check that appointment date is not in the past.
         if data['date'] < timezone.now().date():
-            raise serializers.ValidationError("Appointment cannot be in the past")
-        
-        # Check that appointment date is not in more than 6 months in the future
-        #The following code is from stackoverflow - link in README
+            raise serializers.ValidationError(
+                "Appointment cannot be in the past"
+                )
+
+        # Check that appointment date is not in more
+        # than 6 months in the future
+        # The following code is from stackoverflow - link in README
         six_months = date.today() + relativedelta(months=+6)
         # end of code from stackoverflow
         if data['date'] > six_months:
-            raise serializers.ValidationError(f"We are currently taking appointments until {six_months}")
-        
+            raise serializers.ValidationError(
+                f"""We are currently taking appointments
+                until {six_months}""")
+
         # Check the weekday and block appointments for Sundays and Mondays
         if data['date'].weekday() == 6 or data['date'].weekday() == 0:
-             raise serializers.ValidationError("Sorry, we are closed! We are open Tuesday to Saturday.")
-        
+            raise serializers.ValidationError(
+                "Sorry, we are closed! We are open Tuesday to Saturday."
+                )
+
         # Find the time range (start_time - end_time) for the current instance
         duration = 50
         if data['treatment']:
@@ -51,7 +63,7 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         start_time = data['time']
         end_time = start_time+duration
 
-        #Check that end-time is not after closing time (17:00)
+        # Check that end-time is not after closing time (17:00)
         if end_time > 1700:
             raise serializers.ValidationError(f"This appointment is too late")
 
@@ -60,25 +72,33 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
         # For PUT method, exclude the current instance from the queryset
         if self.instance:
             current_appointment = self.instance.id
-            same_day_appointments = same_day_appointments.exclude(pk=current_appointment)
+            same_day_appointments = same_day_appointments.exclude(
+                pk=current_appointment
+                )
 
-        # For each appointment in the queryset, check that the instance appointment time range
-        # does not have overlapping time with another appoint range (start_time - end_time)
+        # For each appointment in the queryset,
+        # check that the instance appointment time range
+        # does not have overlapping time with another
+        # appoint range (start_time - end_time)
         for appointment in same_day_appointments:
             # The following code is from Stackoverflow - Link in README
-            overlapping = range(max(start_time, appointment.time), min(end_time, appointment.end_time))
+            overlapping = range(
+                max(start_time, appointment.time),
+                min(end_time, appointment.end_time)
+                )
             # End of code from Stackoverflow
             if len(overlapping) != 0:
-                raise serializers.ValidationError(f"This time is not available.")
-        
-        return data
+                raise serializers.ValidationError(
+                    f"This time is not available."
+                    )
 
+        return data
 
     class Meta:
         model = Appointment
         fields = [
             'id', 'owner', 'is_owner',
-            'treatment', 
+            'treatment',
             'status',
             'date', 'time', 'notes',
             'created_at', 'updated_at',
@@ -89,10 +109,12 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
                 fields=['date', 'time']
             )
         ]
-    
+
     # The following code is from Stackoverflow - link in README
     def to_representation(self, instance):
-        rep = super(BaseAppointmentSerializer, self).to_representation(instance)
+        rep = super(
+            BaseAppointmentSerializer, self
+            ).to_representation(instance)
         if rep['treatment']:
             rep['treatment'] = instance.treatment.title
         return rep
@@ -100,16 +122,16 @@ class BaseAppointmentSerializer(serializers.ModelSerializer):
 
 
 class ClientAppointmentSerializer(BaseAppointmentSerializer):
-    """ Client facing serializer.. 
-    Clients cannot select the owner, which will be set to 
+    """ Client facing serializer.
+    Clients cannot select the owner, which will be set to
     the logged in user automatically """
     owner = serializers.ReadOnlyField(source='owner.username')
-    
+
     def validate(self, data):
         # Clients can book appointments for the following day or after.
         if data['date'] <= timezone.now().date():
             raise serializers.ValidationError("This date is not available.")
-        
+
         return super().validate(data)
 
 
@@ -122,8 +144,10 @@ class StaffAppointmentSerializer(BaseAppointmentSerializer):
     def validate(self, data):
         # Check if owner is null, in that case we make name mandatory.
         if data['owner'] is None and data['client_name'] == "":
-            raise serializers.ValidationError("Please, enter a name for unregistered users")
-        
+            raise serializers.ValidationError(
+                "Please, enter a name for unregistered users"
+                )
+
         # If appointment is for today, check that time slot is not in the past
         if data['date'] == timezone.now().date():
             # This is the current hour rounded down
@@ -140,17 +164,18 @@ class StaffAppointmentSerializer(BaseAppointmentSerializer):
                 hour = math.floor(first_available / 100)
                 minutes = "00" if (first_available % 100) < 50 else "30"
                 raise serializers.ValidationError(
-                    f"Sorry, it is not possible to book appointments before {hour}:{minutes} today"
+                    f"""Sorry, it is not possible to book appointments before
+                    {hour}:{minutes} today"""
                     )
 
         return super().validate(data)
-    
+
     class Meta:
         model = Appointment
         fields = [
             'id', 'owner', 'owner_username',
-            'client_name', 
-            'treatment', 
+            'client_name',
+            'treatment',
             'status',
             'date', 'time', 'end_time', 'notes',
             'created_at', 'updated_at',

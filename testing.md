@@ -4,26 +4,16 @@ Back to [main README](readme.md)
 
 ## Table of content
 
-[Tests](#tests)
-  - [Unit test](#unit-test)
-  - [Manual test](#manual-test)
+[Manual testing](#manual-test)
 
 [Validator Testing](#validator-testing)
-  - [Python](#python)
 
 [Fixed bugs](#fixed-bugs)
 
 [Unfixed bugs](#unfixed-bugs)
 
-[Performance](#performance)
 
-
-## Tests
-
-### Unit test
-
-
-### Manual test
+## Manual test
 
 <details>
 <summary>View</summary>
@@ -45,16 +35,62 @@ Back to [main README](readme.md)
 
 ## Validator Testing
 
-### Python
 
 The final version of python files was checked using [CI Python Linter](https://pep8ci.herokuapp.com/#)
 
-Se scrrenshots below:
+Se screenshots below:
 
 <details>
-  <summary>File</summary>
+  <summary>Appointments</summary>
 
-  ![Image]()
+  | File | Result |
+  | -----| ------ |
+  | [admin.py](media/testing/validation/appoint-admin.png) | clean code |
+  | [filters.py](media/testing/validation/appoint-filters.png) | clean code |
+  | [models.py](media/testing/validation/appoint-models.png) | clean code |
+  | [serializers.py](media/testing/validation/appoint-serializers.png) | clean code |
+  | [test.py](media/testing/validation/appoint-tests.png) | clean code |
+  | [urls.py](media/testing/validation/appoint-urls.png) | clean code |
+  | [views.py](media/testing/validation/appoint-views.png) | clean code |
+
+</details>
+
+<details>
+  <summary>Booking api</summary>
+
+  | File | Result |
+  | -----| ------ |
+  | [permissions.py](media/testing/validation/booking-permissions.png) | clean code |
+  | [serializers.py](media/testing/validation/booking-serializers.png) | clean code |
+  | [urls.py](media/testing/validation/booking-urls.png) | clean code |
+  | [views.py](media/testing/validation/booking-views.png) | clean code |
+
+</details>
+
+
+<details>
+  <summary>Profiles</summary>
+
+  | File | Result |
+  | -----| ------ |
+  | [admin.py](media/testing/validation/profiles-admin.png) | clean code |
+  | [models.py](media/testing/validation/profiles-models.png) | clean code |
+  | [serializers.py](media/testing/validation/profiles-serializers.png) | clean code |
+  | [urls.py](media/testing/validation/profiles-urls.png) | clean code |
+  | [views.py](media/testing/validation/profiles-views.png) | clean code |
+
+</details>
+
+<details>
+  <summary>Treatments</summary>
+
+  | File | Result |
+  | -----| ------ |
+  | [admin.py](media/testing/validation/treatment-admin.png) | clean code |
+  | [models.py](media/testing/validation/treatment-model.png) | clean code |
+  | [serializers.py](media/testing/validation/treatment-serializers.png) | clean code |
+  | [urls.py](media/testing/validation/treatment-urls.png) | clean code |
+  | [views.py](media/testing/validation/treatment-views.png) | clean code |
 
 </details>
 
@@ -125,9 +161,6 @@ There are currently 0 known unfixed bugs
 
 [Back to the top](#table-of-content)
 
-## Performance
-
-
-[Back to the top](#table-of-content)
+________
 
 Back to [main README](readme.md)

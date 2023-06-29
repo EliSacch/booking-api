@@ -271,15 +271,13 @@ _____________
 
 Languages used:
   - Python
+
+Frameworks and applications:
   - Django
-
-Other libraries:
-
-Python libraries:
-
-Django libraries, frameworks and applications:
   - Django-cloudinary-storage - To connect our Django project to Cloudinary
   - Pillow - To add image processing capabilities to our project
+  - Django-allauth - for user authentication
+  - Django-cors-headers - to allow in-browser requests to the Django api from other applications.
   - Django REST framework - To build the web API
   - Simplejwt - to use django web tokens
 

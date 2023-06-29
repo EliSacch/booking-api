@@ -8,7 +8,9 @@ from rest_framework.test import APITestCase
 
 class AppointmentListViewTests(APITestCase):
     def setUp(self):
-        User.objects.create_user(username='Admin', password='admin', is_staff=True)
+        User.objects.create_user(
+            username='Admin', password='admin', is_staff=True
+            )
         User.objects.create_user(username='Client', password='client')
         Treatment.objects.create(title='Color', duration=100)
 
@@ -29,7 +31,11 @@ class AppointmentListViewTests(APITestCase):
         self.client.login(username='Client', password='client')
         client = User.objects.get(username='Client')
         treatment = Treatment.objects.get(title='Color')
-        response = self.client.post('/my-appointments/', {'owner': client, 'treatment': treatment, 'date': '2023-08-09', 'time': 900})
+        response = self.client.post('/my-appointments/',
+                                    {'owner': client,
+                                     'treatment': treatment,
+                                     'date': '2023-08-09',
+                                     'time': 900})
         count = Appointment.objects.count()
         self.assertEqual(count, 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -47,14 +53,28 @@ class AppointmentListViewTests(APITestCase):
 
 class AppointmentDetailViewTests(APITestCase):
     def setUp(self):
-        User.objects.create_user(username='Admin', password='admin', is_staff=True)
+        User.objects.create_user(
+            username='Admin', password='admin', is_staff=True
+            )
         User.objects.create_user(username='Client', password='client')
         Treatment.objects.create(title='Color', duration=100)
         admin = User.objects.get(username='Admin')
         client = User.objects.get(username='Client')
         treatment = Treatment.objects.get(title='Color')
-        Appointment.objects.create(owner=admin, treatment=treatment, date='2023-08-09', time=1300, end_time=1400)
-        Appointment.objects.create(owner=client, treatment=treatment, date='2023-08-10', time=1100, end_time=1200)
+        Appointment.objects.create(
+            owner=admin,
+            treatment=treatment,
+            date='2023-08-09',
+            time=1300,
+            end_time=1400
+            )
+        Appointment.objects.create(
+            owner=client,
+            treatment=treatment,
+            date='2023-08-10',
+            time=1100,
+            end_time=1200
+            )
 
     def test_staff_can_retrieve_any_appointment_using_valid_id(self):
         self.client.login(username='Admin', password='admin')
@@ -81,7 +101,11 @@ class AppointmentDetailViewTests(APITestCase):
         self.client.login(username='Client', password='client')
         client = User.objects.get(username='Client')
         service = Treatment.objects.get(title='Color')
-        response = self.client.put('/my-appointments/2/', {'owner': client, 'service': service, 'date': '2023-08-10', 'time': 900})
+        response = self.client.put('/my-appointments/2/',
+                                   {'owner': client,
+                                    'service': service,
+                                    'date': '2023-08-10',
+                                    'time': 900})
         appointment = Appointment.objects.filter(pk=2).first()
         self.assertEqual(appointment.time, 900)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -90,10 +114,18 @@ class AppointmentDetailViewTests(APITestCase):
         self.client.login(username='Client', password='client')
         response = self.client.put('/my-appointments/1/', {'time': 900})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
+
     def test_staff_can_update_another_users_appointment(self):
         self.client.login(username='Admin', password='admin')
         client = User.objects.get(username='Client')
         treatment = Treatment.objects.get(title='Color')
-        response = self.client.put('/appointments/2/', {'owner': client, 'treatment': treatment, 'date': '2023-08-10', 'time': 1000})
+        response = self.client.put(
+            '/appointments/2/',
+            {
+                'owner': client,
+                'treatment': treatment,
+                'date': '2023-08-10',
+                'time': 1000
+                }
+            )
         self.assertEqual(response.status_code, status.HTTP_200_OK)

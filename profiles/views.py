@@ -18,7 +18,11 @@ class ProfileList(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, IsStaffMember]
     queryset = Profile.objects.annotate(
         appointments_count=Count('owner__appointment', distinct=True),
-        has_appointments_today = Count('owner__appointment', filter=Q(owner__appointment__date=date.today()), distinct=True),
+        has_appointments_today=Count(
+            'owner__appointment',
+            filter=Q(owner__appointment__date=date.today()),
+            distinct=True
+            ),
     ).order_by('-created_at')
     serializer_class = ClientSerializer
     filter_backends = [
@@ -34,7 +38,7 @@ class ProfileList(generics.ListAPIView):
 
 class ProfileDetail(generics.RetrieveUpdateAPIView):
     """ Retrieve or update a profile if you're the owner.
-    This is the client facing profile detail view 
+    This is the client facing profile detail view
     this is why it uses the Profile Serializer """
     permission_classes = [permissions.IsAuthenticated, IsOwner]
     queryset = Profile.objects.order_by('-created_at')
@@ -44,14 +48,19 @@ class ProfileDetail(generics.RetrieveUpdateAPIView):
 class ClientProfileDetail(generics.RetrieveUpdateAPIView):
     """ Retrieve or update a client profile profile
     if you're a staff member.
-    This is the staff facing profile detail view 
+    This is the staff facing profile detail view
     this is why it uses the Client Serializer """
     permission_classes = [permissions.IsAuthenticated, IsStaffMember]
     queryset = Profile.objects.annotate(
         appointments_count=Count('owner__appointment', distinct=True),
-        has_appointments_today = Count('owner__appointment', filter=Q(owner__appointment__date=date.today()), distinct=True),
+        has_appointments_today=Count(
+            'owner__appointment',
+            filter=Q(owner__appointment__date=date.today()),
+            distinct=True
+            ),
     ).order_by('-created_at')
     serializer_class = ClientSerializer
+
 
 class SetIsStaff(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated, IsStaffMember]

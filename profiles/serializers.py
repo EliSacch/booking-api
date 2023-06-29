@@ -60,8 +60,10 @@ class ClientSerializer(serializers.ModelSerializer):
             'created_at', 'updated_at',
         ]
 
+
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()
+
     class Meta:
         model = User
         fields = [

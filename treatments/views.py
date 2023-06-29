@@ -11,27 +11,32 @@ from booking_api.permissions import IsStaffMemberOrReadOnly
 
 class TreatmentList(generics.ListCreateAPIView):
     """ List all treatments, or create a new one if logged in as staff """
-    permission_classes = [ permissions.IsAuthenticatedOrReadOnly, IsStaffMemberOrReadOnly ]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly, IsStaffMemberOrReadOnly
+        ]
     queryset = Treatment.objects.order_by('-created_at')
     filter_backends = [
         filters.SearchFilter,
     ]
-    search_fields = ['title',]
-    
+    search_fields = ['title', ]
+
     def get_serializer_class(self):
         if self.request.user.is_staff:
-                return TreatmentSerializer
+            return TreatmentSerializer
         return ClientFacingTreatmentSerializer
 
 
 class TreatmentDetail(generics.RetrieveUpdateDestroyAPIView):
     """ Retrieve the specific treatment and allow
     update and delete functionality """
-    permission_classes = [ permissions.IsAuthenticatedOrReadOnly, IsStaffMemberOrReadOnly]
+    permission_classes = [
+         permissions.IsAuthenticatedOrReadOnly, IsStaffMemberOrReadOnly
+         ]
     queryset = Treatment.objects.all()
     serializer_class = TreatmentSerializer
 
-    # The following code to catch ProtectedError is from Stacjoverflow - Link in README
+    # The following code to catch ProtectedError is
+    # from Stackoverflow - Link in README
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         try:
@@ -40,7 +45,9 @@ class TreatmentDetail(generics.RetrieveUpdateDestroyAPIView):
 
         # if protected, cannot be deleted, show error message
         except ProtectedError as exception:
-            message = f"You cannot delete this Treatment because it is being used. Please, set it to inactive."
+            message = f"""You cannot delete this Treatment
+            because it is being used.
+            Please, set it to inactive."""
             response_msg = {
                 "error": {"message": message},
             }
