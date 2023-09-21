@@ -66,6 +66,10 @@ JWT_AUTH_COOKIE = 'booking-api-auth'
 JWT_AUTH_REFRESH_COOKIE = 'booking-api-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
 
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
+}
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
